@@ -7,16 +7,21 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from database import Base, engine
+from database import Base, SessionLocal, engine
 from routers import orders, products
 
 # Importamos los modelos para que registren sus tablas en Base.metadata.
 # (Sin este import, create_all no sabe qué tablas crear.)
 from models import Order, Product  # noqa: F401
+from seed import seed_products
 
 # Crea las tablas (products y orders) si no existen.
 # En producción conviene usar Alembic para migraciones.
 Base.metadata.create_all(bind=engine)
+
+# Siembra el catálogo solo la primera vez (si products está vacía).
+with SessionLocal() as db:
+    seed_products(db)
 
 app = FastAPI(
     title="Kiosco El Rápido API",
