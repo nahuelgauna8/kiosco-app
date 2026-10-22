@@ -23,14 +23,22 @@ function ProductDetail() {
   const [notFound, setNotFound] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
 
-  useEffect(() => {
-    let cancelled = false;
+  // Al cambiar de producto (o reintentar) volvemos al estado de carga.
+  // Se hace durante el render (patrón recomendado por React), no en el effect.
+  const requestKey = `${id}#${retryKey}`;
+  const [prevRequestKey, setPrevRequestKey] = useState(requestKey);
 
+  if (prevRequestKey !== requestKey) {
+    setPrevRequestKey(requestKey);
     setLoading(true);
     setError(null);
     setNotFound(false);
     setProduct(null);
     setQuantity(1); // Reseteamos la cantidad al cambiar de producto.
+  }
+
+  useEffect(() => {
+    let cancelled = false;
 
     getProductById(Number(id))
       .then((data) => {

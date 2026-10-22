@@ -24,12 +24,21 @@ function Products() {
   // Permite reintentar sin cambiar la URL (botón "Reintentar").
   const [retryKey, setRetryKey] = useState(0);
 
+  // Cuando cambia la categoría de la URL (o el reintento), volvemos a estado de
+  // carga. Se hace durante el render (patrón recomendado por React) en lugar de
+  // dentro del effect, para no disparar renders en cascada.
+  const requestKey = `${categoryFilter}#${retryKey}`;
+  const [prevRequestKey, setPrevRequestKey] = useState(requestKey);
+
+  if (prevRequestKey !== requestKey) {
+    setPrevRequestKey(requestKey);
+    setLoading(true);
+    setError(null);
+  }
+
   // Cargamos los productos cuando cambia la categoría de la URL (o el reintento).
   useEffect(() => {
     let cancelled = false; // Evita actualizar estado si el usuario cambió de filtro rápido.
-
-    setLoading(true);
-    setError(null);
 
     getProducts(categoryFilter)
       .then((data) => {

@@ -2,8 +2,8 @@
 
 Aplicación web full-stack para un kiosco de barrio.
 
-- **Parte 1 (actual):** Frontend SPA con React + TypeScript + React Router + Context API (datos mock).
-- **Parte 2 (próxima):** Backend con FastAPI + SQLite + Pydantic e integración frontend ↔ backend.
+- **Parte 1 (completada):** Frontend SPA con React + TypeScript + React Router + Context API (datos mock, ya reemplazados por la API).
+- **Parte 2 (en curso):** Backend con FastAPI + SQLite + Pydantic e integración frontend ↔ backend con loading y errores visibles.
 
 ## 🧑‍💻 Equipo
 
@@ -12,9 +12,9 @@ Aplicación web full-stack para un kiosco de barrio.
 | Nahuel Gauna |
 | Damián |
 
-## 🚀 Cómo correr el frontend (Parte 1)
+## 🚀 Cómo correr el frontend (Parte 2)
 
-Requisitos: Node.js 20+ y npm.
+Requisitos: Node.js 20+ y npm. **El backend debe estar corriendo en el puerto 8000** (ver sección siguiente), porque el frontend consume su API.
 
 ```bash
 # 1. Instalar dependencias
@@ -65,8 +65,8 @@ src/
 ├── components/   # Header, Footer, Layout, ProductCard, CartItem
 ├── context/      # CartContext (carrito con useContext + useState)
 ├── pages/        # Home, Products, ProductDetail, Cart, NotFound
-├── types/        # Interfaces compartidas (Product, CartItem, ...)
-├── data/         # products.ts (datos mock de la Parte 1)
+├── services/     # api.ts: getProducts, getProductById, createOrder (fetch al backend)
+├── types/        # Interfaces compartidas (Product, CartItem, Order, ...)
 ├── App.tsx       # Rutas de la aplicación
 └── main.tsx      # Punto de entrada
 
@@ -93,4 +93,4 @@ Esta Parte 1 avanza tarea por tarea, con un commit por tarea:
 - [x] **Tarea 2.1** – Backend FastAPI + SQLite + Pydantic + CORS
 - [x] **Tarea 2.2** – Endpoints GET de productos
 - [x] **Tarea 2.3** – Endpoint POST de pedidos (descuento de stock)
-- [ ] **Tarea 2.4** – Integración frontend ↔ API con loading y errores visibles
+- [x] **Tarea 2.4** – Integración frontend ↔ API con loading y errores visibles
