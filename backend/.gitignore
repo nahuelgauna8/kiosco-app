@@ -1,0 +1,9 @@
+# Entorno virtual de Python
+.venv/
+
+# Bytecodes y caché de Python
+__pycache__/
+*.py[cod]
+
+# Base de datos SQLite del kiosco (cada quien genera la suya)
+kiosco.db
