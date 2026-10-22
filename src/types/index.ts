@@ -17,3 +17,27 @@ export interface CartItem {
   product: Product;
   quantity: number;
 }
+
+// ===== Pedidos (API - Parte 2) =====
+
+// Body que enviamos al POST /api/orders
+export interface OrderItemInput {
+  product_id: number;
+  quantity: number;
+}
+
+// Ítem del pedido tal como lo responde el backend (con nombre y precio ya fijados)
+export interface OrderItemDetail {
+  product_id: number;
+  name: string;
+  quantity: number;
+  price: number;
+}
+
+// Pedido devuelto por la API
+export interface Order {
+  id: number;
+  created_at: string;
+  total: number;
+  items: OrderItemDetail[];
+}
