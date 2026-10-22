@@ -92,5 +92,5 @@ Esta Parte 1 avanza tarea por tarea, con un commit por tarea:
 - [x] **Tarea 1.6** – Página Cart + "Finalizar pedido" simulado (fin Parte 1)
 - [x] **Tarea 2.1** – Backend FastAPI + SQLite + Pydantic + CORS
 - [x] **Tarea 2.2** – Endpoints GET de productos
-- [ ] **Tarea 2.3** – Endpoint POST de pedidos (descuento de stock)
+- [x] **Tarea 2.3** – Endpoint POST de pedidos (descuento de stock)
 - [ ] **Tarea 2.4** – Integración frontend ↔ API con loading y errores visibles
