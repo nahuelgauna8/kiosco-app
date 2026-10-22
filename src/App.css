@@ -188,6 +188,46 @@
   cursor: not-allowed;
 }
 
+/* ===== Estados de carga y error (API) ===== */
+
+.status-message {
+  padding: 16px 20px;
+  border-radius: var(--radius);
+  font-weight: 600;
+}
+
+.status-message--loading {
+  background: #fff9db;
+  color: #997404;
+  border: 1px solid #ffe066;
+}
+
+.status-message--loading::before {
+  content: "⏳ ";
+}
+
+.status-message--error {
+  background: #fff5f5;
+  color: var(--color-danger);
+  border: 1px solid #ffc9c9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-message--error::before {
+  content: "⚠️ ";
+}
+
+.status-message--error p {
+  margin: 0;
+}
+
+.status-message--error .button::before {
+  content: none;
+}
+
 /* ===== Página Cart ===== */
 
 .cart__list {

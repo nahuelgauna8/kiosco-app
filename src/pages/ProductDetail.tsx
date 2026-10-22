@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { products } from "../data/products";
+import type { Product } from "../types";
+import { ApiError, getProductById } from "../services/api";
 import { useCart } from "../context/CartContext";
 
 // Página de detalle de producto.
 // El id viene de la URL (path param): /products/:id
+// El producto se carga desde el backend (GET /api/products/{id}).
 function ProductDetail() {
   // useParams devuelve los path params como strings (id es string, hay que convertirlo).
   const { id } = useParams();
@@ -14,11 +16,83 @@ function ProductDetail() {
   // Cantidad elegida por el usuario (por defecto 1).
   const [quantity, setQuantity] = useState(1);
 
-  // Buscamos el producto en el mock. Si el id no es un número válido, da undefined.
-  const product = products.find((p) => p.id === Number(id));
+  // Estados de la petición a la API.
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [notFound, setNotFound] = useState(false);
+  const [retryKey, setRetryKey] = useState(0);
 
-  // Si no existe el producto, mostramos un mensaje con link para volver.
-  if (!product) {
+  useEffect(() => {
+    let cancelled = false;
+
+    setLoading(true);
+    setError(null);
+    setNotFound(false);
+    setProduct(null);
+    setQuantity(1); // Reseteamos la cantidad al cambiar de producto.
+
+    getProductById(Number(id))
+      .then((data) => {
+        if (!cancelled) setProduct(data);
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return;
+
+        if (err instanceof ApiError && err.status === 404) {
+          // El producto no existe en la base de datos.
+          setNotFound(true);
+        } else {
+          setError(
+            err instanceof ApiError
+              ? err.message
+              : "No se pudo cargar el producto. Intentá de nuevo.",
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id, retryKey]);
+
+  // Estado de carga: visible mientras espera la API.
+  if (loading) {
+    return (
+      <section className="page">
+        <p className="status-message status-message--loading" role="status">
+          Cargando producto...
+        </p>
+      </section>
+    );
+  }
+
+  // Estado de error: visible si falla la red o la API responde mal.
+  if (error) {
+    return (
+      <section className="page">
+        <div className="status-message status-message--error" role="alert">
+          <p>{error}</p>
+          <button
+            type="button"
+            className="button button--secondary"
+            onClick={() => setRetryKey((key) => key + 1)}
+          >
+            Reintentar
+          </button>
+        </div>
+        <Link to="/products" className="button button--primary">
+          Volver al catálogo
+        </Link>
+      </section>
+    );
+  }
+
+  // Producto inexistente (404 de la API).
+  if (notFound || !product) {
     return (
       <section className="page">
         <h1>Producto no encontrado</h1>
@@ -31,7 +105,7 @@ function ProductDetail() {
   }
 
   const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // parseInt con NaN como respaldo si el input queda vacío.
+    // parseInt con 1 como respaldo si el input queda vacío.
     const newQuantity = parseInt(event.target.value, 10);
     setQuantity(isNaN(newQuantity) ? 1 : newQuantity);
   };
