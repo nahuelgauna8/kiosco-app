@@ -56,7 +56,7 @@ Esta Parte 1 avanza tarea por tarea, con un commit por tarea:
 - [x] **Tarea 1.3** – CartContext (carrito con Context API)
 - [x] **Tarea 1.4** – Página Products con filtro por categoría (query params)
 - [x] **Tarea 1.5** – Página ProductDetail (path params) + Home
-- [ ] **Tarea 1.6** – Página Cart + "Finalizar pedido" simulado (fin Parte 1)
+- [x] **Tarea 1.6** – Página Cart + "Finalizar pedido" simulado (fin Parte 1)
 - [ ] **Tarea 2.1** – Backend FastAPI + SQLite + Pydantic + CORS
 - [ ] **Tarea 2.2** – Endpoints GET de productos
 - [ ] **Tarea 2.3** – Endpoint POST de pedidos (descuento de stock)
