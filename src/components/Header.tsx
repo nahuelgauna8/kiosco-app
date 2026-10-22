@@ -1,7 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
 
 // Header global: logo + navegación con NavLink.
-// El contador del carrito se conecta al CartContext en la Tarea 1.3.
+// El contador del carrito se conecta al CartContext en la Tarea 1.6.
 function Header() {
   return (
     <header className="header">
