@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Order } from "../types";
-import { ApiError, getOrders } from "../services/api";
+import { ApiError, deleteOrders, getOrders } from "../services/api";
 
 // Formatea la fecha ISO que devuelve el backend (2026-11-03T22:11:48)
 // como fecha y hora local legibles.
@@ -22,6 +22,10 @@ function Orders() {
   const [error, setError] = useState<string | null>(null);
   const [retryKey, setRetryKey] = useState(0);
 
+  // Borrar historial (DELETE /api/orders).
+  const [deleting, setDeleting] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+
   // Al reintentar volvemos al estado de carga (durante el render, sin effect).
   const [prevRetryKey, setPrevRetryKey] = useState(retryKey);
 
@@ -29,6 +33,7 @@ function Orders() {
     setPrevRetryKey(retryKey);
     setLoading(true);
     setError(null);
+    setNotice(null);
   }
 
   useEffect(() => {
@@ -55,9 +60,56 @@ function Orders() {
     };
   }, [retryKey]);
 
+  // Borra todo el historial, con confirmación antes de ejecutarlo.
+  const handleClearHistory = async () => {
+    const confirmed = window.confirm(
+      "¿Borrar todo el historial de pedidos? Esta acción no se puede deshacer.",
+    );
+    if (!confirmed) return;
+
+    setDeleting(true);
+    setError(null);
+    setNotice(null);
+
+    try {
+      await deleteOrders();
+      setOrders([]);
+      setNotice("Historial borrado correctamente.");
+    } catch (err: unknown) {
+      setError(
+        err instanceof ApiError
+          ? err.message
+          : "No se pudo borrar el historial. Intentá de nuevo.",
+      );
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <section className="page orders">
-      <h1>Mis pedidos</h1>
+      <div className="orders__topbar">
+        <h1>Mis pedidos</h1>
+
+        {/* Solo se muestra si hay pedidos para borrar */}
+        {!loading && !error && orders.length > 0 && (
+          <button
+            type="button"
+            className="button button--secondary orders__clear"
+            onClick={handleClearHistory}
+            disabled={deleting}
+          >
+            {deleting ? "Borrando..." : "🗑️ Borrar historial"}
+          </button>
+        )}
+      </div>
+
+      {/* Confirmación de que se borró */}
+      {!loading && !error && notice && (
+        <p className="orders__notice" role="status">
+          {notice}
+        </p>
+      )}
 
       {/* Estado de carga */}
       {loading && (

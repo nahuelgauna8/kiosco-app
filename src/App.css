@@ -1036,6 +1036,46 @@
 
 /* ===== Página "Mis pedidos" (historial) ===== */
 
+.orders__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  text-align: left;
+}
+
+.orders__topbar h1 {
+  margin: 0;
+}
+
+/* Botón "Borrar historial": tono de peligro */
+.orders__clear {
+  color: var(--color-danger);
+  border-color: #ffc9c9;
+}
+
+.orders__clear:hover:not(:disabled) {
+  background: #fff5f5;
+  border-color: var(--color-danger);
+}
+
+.orders__clear:disabled {
+  background: var(--color-bg);
+  color: var(--color-text-light);
+}
+
+/* Aviso de éxito tras borrar */
+.orders__notice {
+  margin: 16px 0 0;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  background: #ebfbee;
+  color: var(--color-success);
+  border: 1px solid #b2f2bb;
+  font-weight: 600;
+}
+
 .orders__list {
   list-style: none;
   margin: 20px 0 0;

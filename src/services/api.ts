@@ -123,3 +123,11 @@ export async function createOrder(items: OrderItemInput[]): Promise<Order> {
 export async function getOrders(): Promise<Order[]> {
   return request<Order[]>("/orders");
 }
+
+// DELETE /api/orders (borra todo el historial; no modifica el stock)
+export async function deleteOrders(): Promise<number> {
+  const result = await request<{ deleted: number }>(`/orders`, {
+    method: "DELETE",
+  });
+  return result.deleted;
+}
