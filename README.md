@@ -101,5 +101,10 @@ Esta Parte 1 avanza tarea por tarea, con un commit por tarea:
 - [x] **R.2** – Catálogo con sidebar de categorías, barra de ordenamiento, búsqueda por nombre y tarjetas preparadas para imágenes reales (`public/images/`)
 - [x] **R.3** – Carrito como panel lateral (drawer) deslizante con resumen, cantidades y total con impuestos
 
+### 🚀 Mejoras (fase 3)
+
+- [x] **M.1** – Carrito persistente en localStorage (no se pierde al recargar)
+- [ ] **M.2** – Historial de pedidos: página "Mis pedidos" con GET /api/orders
+
 > Las imágenes reales de productos y el banner se agregarán al final del proyecto
 > (`public/images/`); el componente `ProductImage` ya las renderiza automáticamente.
