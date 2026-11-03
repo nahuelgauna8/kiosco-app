@@ -75,3 +75,9 @@ class OrderOut(BaseModel):
             total=order.total,
             items=json.loads(order.items_json),
         )
+
+
+class OrdersDeleted(BaseModel):
+    """Salida de DELETE /api/orders: cuántos pedidos se borraron."""
+
+    deleted: int = Field(ge=0)

@@ -1,14 +1,14 @@
-# Endpoints de pedidos: POST /api/orders (crea y descuenta stock)
-# y GET /api/orders (lista los pedidos).
+# Endpoints de pedidos: POST /api/orders (crea y descuenta stock),
+# GET /api/orders (lista los pedidos) y DELETE /api/orders (borra el historial).
 import json
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
 from database import get_db
 from models import Order, Product
-from schemas import OrderCreate, OrderItemOut, OrderOut
+from schemas import OrderCreate, OrderItemOut, OrderOut, OrdersDeleted
 
 router = APIRouter(prefix="/api/orders", tags=["orders"])
 
@@ -88,3 +88,16 @@ def get_orders(db: Session = Depends(get_db)):
     """Lista todos los pedidos, del más reciente al más antiguo."""
     orders = db.scalars(select(Order).order_by(Order.id.desc())).all()
     return [OrderOut.from_order(order) for order in orders]
+
+
+@router.delete("", response_model=OrdersDeleted)
+def delete_orders(db: Session = Depends(get_db)):
+    """Borra todo el historial de pedidos.
+
+    No modifica el stock de los productos: los pedidos ya descontaron su
+    stock al crearse, borrar el historial no lo devuelve.
+    """
+    deleted = db.scalar(select(func.count()).select_from(Order)) or 0
+    db.execute(delete(Order))
+    db.commit()
+    return OrdersDeleted(deleted=deleted)
