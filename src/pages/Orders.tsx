@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Order } from "../types";
 import { ApiError, deleteOrders, getOrders } from "../services/api";
+import ConfirmDialog from "../components/ConfirmDialog";
 
 // Formatea la fecha ISO que devuelve el backend (2026-11-03T22:11:48)
 // como fecha y hora local legibles.
@@ -25,6 +26,9 @@ function Orders() {
   // Borrar historial (DELETE /api/orders).
   const [deleting, setDeleting] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  // Diálogo de confirmación (modal propio, sin window.confirm).
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const clearButtonRef = useRef<HTMLButtonElement>(null);
 
   // Al reintentar volvemos al estado de carga (durante el render, sin effect).
   const [prevRetryKey, setPrevRetryKey] = useState(retryKey);
@@ -60,13 +64,8 @@ function Orders() {
     };
   }, [retryKey]);
 
-  // Borra todo el historial, con confirmación antes de ejecutarlo.
-  const handleClearHistory = async () => {
-    const confirmed = window.confirm(
-      "¿Borrar todo el historial de pedidos? Esta acción no se puede deshacer.",
-    );
-    if (!confirmed) return;
-
+  // Borra todo el historial: el modal pide confirmación antes de ejecutar.
+  const handleConfirmClear = async () => {
     setDeleting(true);
     setError(null);
     setNotice(null);
@@ -83,6 +82,9 @@ function Orders() {
       );
     } finally {
       setDeleting(false);
+      setConfirmOpen(false);
+      // El botón puede desaparecer (historial vacío): el foco vuelve a la página.
+      clearButtonRef.current?.focus();
     }
   };
 
@@ -96,13 +98,26 @@ function Orders() {
           <button
             type="button"
             className="button button--secondary orders__clear"
-            onClick={handleClearHistory}
+            onClick={() => setConfirmOpen(true)}
             disabled={deleting}
+            ref={clearButtonRef}
           >
-            {deleting ? "Borrando..." : "🗑️ Borrar historial"}
+            🗑️ Borrar historial
           </button>
         )}
       </div>
+
+      {/* Modal de confirmación para borrar el historial */}
+      <ConfirmDialog
+        open={confirmOpen}
+        title="¿Borrar todo el historial?"
+        message="Se eliminarán todos tus pedidos registrados. Esta acción no se puede deshacer."
+        confirmLabel="Borrar historial"
+        cancelLabel="Cancelar"
+        busy={deleting}
+        onConfirm={handleConfirmClear}
+        onCancel={() => setConfirmOpen(false)}
+      />
 
       {/* Confirmación de que se borró */}
       {!loading && !error && notice && (

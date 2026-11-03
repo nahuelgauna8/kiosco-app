@@ -106,6 +106,7 @@ Esta Parte 1 avanza tarea por tarea, con un commit por tarea:
 - [x] **M.1** – Carrito persistente en localStorage (no se pierde al recargar)
 - [x] **M.2** – Historial de pedidos: página "Mis pedidos" con GET /api/orders
 - [x] **M.3** – Borrar historial: endpoint DELETE /api/orders + botón con confirmación
+- [x] **M.4** – Modal de confirmación propio (ConfirmDialog), acorde a la interfaz, en lugar de window.confirm
 
 > Las imágenes reales de productos y el banner se agregarán al final del proyecto
 > (`public/images/`); el componente `ProductImage` ya las renderiza automáticamente.

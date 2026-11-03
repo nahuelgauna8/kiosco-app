@@ -1151,6 +1151,91 @@
   gap: 14px;
 }
 
+/* ===== Diálogo de confirmación (modal) ===== */
+
+.confirm__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 12, 6, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 120; /* por encima del drawer del carrito (100) */
+  animation: confirm-fade 0.2s ease;
+}
+
+.confirm {
+  background: var(--color-surface);
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  padding: 26px 26px 22px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  animation: confirm-pop 0.2s ease;
+}
+
+.confirm__title {
+  margin: 0 0 10px;
+  font-size: 1.25rem;
+}
+
+.confirm__message {
+  margin: 0 0 22px;
+  color: var(--color-text-light);
+  line-height: 1.5;
+}
+
+.confirm__actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Botón de acción destructiva */
+.button--danger {
+  background: var(--color-danger);
+  color: #fff;
+}
+
+.button--danger:hover:not(:disabled) {
+  background: #a61e1e;
+}
+
+.button--danger:disabled {
+  background: var(--color-text-light);
+}
+
+@keyframes confirm-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes confirm-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Respeta la preferencia de movimiento reducido del sistema */
+@media (prefers-reduced-motion: reduce) {
+  .confirm__backdrop,
+  .confirm {
+    animation: none;
+  }
+}
+
 /* ===== Responsive ===== */
 
 @media (max-width: 900px) {
