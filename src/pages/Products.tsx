@@ -1,21 +1,32 @@
-import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
+import { CATEGORIES } from "../data/categories";
 import type { Product } from "../types";
 import { ApiError, getProducts } from "../services/api";
 
-// Categorías disponibles para el filtro.
-const categories = ["todas", "bebidas", "snacks", "golosinas", "varios"] as const;
+// Opciones de ordenamiento de la barra superior.
+const sortOptions = [
+  { value: "destacados", label: "Destacados" },
+  { value: "precio-asc", label: "Precio: menor a mayor" },
+  { value: "precio-desc", label: "Precio: mayor a menor" },
+  { value: "nombre", label: "Nombre (A-Z)" },
+] as const;
 
-// Página de listado de productos.
-// Carga los datos desde el backend (GET /api/products) y filtra con query param:
-// /products?category=bebidas
+type SortOption = (typeof sortOptions)[number]["value"];
+
+// Página de catálogo: sidebar de categorías + barra de ordenamiento + grilla.
+// Carga los datos desde el backend (GET /api/products) y filtra con query params:
+//   /products?category=bebidas
+//   /products?search=coca        (búsqueda por nombre, se aplica en el cliente)
+// El ordenamiento es local (no cambia la URL).
 function Products() {
   // useSearchParams reemplaza a useState para lo que vive en la query string:
   // [searchParams] = estado actual de la URL, setSearchParams = actualizar la URL.
   const [searchParams, setSearchParams] = useSearchParams();
 
   const categoryFilter = searchParams.get("category") ?? "todas";
+  const searchTerm = (searchParams.get("search") ?? "").trim().toLowerCase();
 
   // Estados de la petición a la API (loading y error se muestran en pantalla).
   const [products, setProducts] = useState<Product[]>([]);
@@ -23,6 +34,9 @@ function Products() {
   const [error, setError] = useState<string | null>(null);
   // Permite reintentar sin cambiar la URL (botón "Reintentar").
   const [retryKey, setRetryKey] = useState(0);
+
+  // Ordenamiento elegido en la barra superior (estado local).
+  const [sort, setSort] = useState<SortOption>("destacados");
 
   // Cuando cambia la categoría de la URL (o el reintento), volvemos a estado de
   // carga. Se hace durante el render (patrón recomendado por React) en lugar de
@@ -61,74 +75,160 @@ function Products() {
     };
   }, [categoryFilter, retryKey]);
 
-  // Al cambiar el select, actualizamos la query param (la URL queda compartible).
-  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newCategory = event.target.value;
+  // Búsqueda por nombre + ordenamiento: se aplican sobre los datos ya cargados.
+  const visibleProducts = useMemo(() => {
+    let list = [...products];
 
-    if (newCategory === "todas") {
-      // Sin filtro: limpiamos la query param para no dejar "?category=todas" de más.
-      setSearchParams({});
-    } else {
-      setSearchParams({ category: newCategory });
+    if (searchTerm) {
+      list = list.filter((product) =>
+        product.name.toLowerCase().includes(searchTerm),
+      );
     }
+
+    switch (sort) {
+      case "precio-asc":
+        list.sort((a, b) => a.price - b.price);
+        break;
+      case "precio-desc":
+        list.sort((a, b) => b.price - a.price);
+        break;
+      case "nombre":
+        list.sort((a, b) => a.name.localeCompare(b.name, "es"));
+        break;
+      default:
+        // "destacados": conserva el orden que devuelve el backend.
+        break;
+    }
+
+    return list;
+  }, [products, searchTerm, sort]);
+
+  // Click en una categoría del sidebar: actualiza la query param.
+  // La búsqueda se limpia al elegir categoría (y viceversa) para que los dos
+  // modos no se pisen: o browseás por categoría o buscás por nombre.
+  const selectCategory = (categoryId: string) => {
+    setSearchParams(categoryId === "todas" ? {} : { category: categoryId });
   };
 
   return (
-    <section className="page">
-      <h1>Nuestros productos</h1>
-
-      <div className="products__filter">
-        <label htmlFor="category-filter">Filtrar por categoría:</label>
-        <select
-          id="category-filter"
-          value={categoryFilter}
-          onChange={handleCategoryChange}
-          disabled={loading || error !== null}
-        >
-          {categories.map((category) => (
-            <option key={category} value={category}>
-              {category === "todas" ? "Todas" : category}
-            </option>
+    <div className="products-layout">
+      {/* ===== Panel lateral: filtros de categorías ===== */}
+      <aside className="products__sidebar">
+        <h2>Categorías</h2>
+        <ul className="products__category-list">
+          <li>
+            <button
+              type="button"
+              className={`products__category-link ${
+                categoryFilter === "todas" ? "is-active" : ""
+              }`}
+              onClick={() => selectCategory("todas")}
+            >
+              <span aria-hidden="true">🛒</span> Todas
+            </button>
+          </li>
+          {CATEGORIES.map((category) => (
+            <li key={category.id}>
+              <button
+                type="button"
+                className={`products__category-link ${
+                  categoryFilter === category.id ? "is-active" : ""
+                }`}
+                onClick={() => selectCategory(category.id)}
+              >
+                <span aria-hidden="true">{category.emoji}</span> {category.label}
+              </button>
+            </li>
           ))}
-        </select>
-      </div>
+        </ul>
+      </aside>
 
-      {/* Estado de carga: visible mientras espera la API */}
-      {loading && (
-        <p className="status-message status-message--loading" role="status">
-          Cargando productos...
-        </p>
-      )}
+      {/* ===== Contenido: barra superior + grilla ===== */}
+      <div className="products__content">
+        <div className="products__topbar">
+          <h1>Nuestros productos</h1>
 
-      {/* Estado de error: visible si falla la red o la API responde mal */}
-      {!loading && error && (
-        <div className="status-message status-message--error" role="alert">
-          <p>{error}</p>
-          <button
-            type="button"
-            className="button button--secondary"
-            onClick={() => setRetryKey((key) => key + 1)}
-          >
-            Reintentar
-          </button>
-        </div>
-      )}
-
-      {/* Resultado normal */}
-      {!loading && !error && (
-        <>
-          {products.length === 0 ? (
-            <p>No hay productos en la categoría "{categoryFilter}".</p>
-          ) : (
-            <div className="products__grid">
-              {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
+          <div className="products__sort">
+            <label htmlFor="sort-products">Ordenar por:</label>
+            <select
+              id="sort-products"
+              value={sort}
+              onChange={(event) => setSort(event.target.value as SortOption)}
+              disabled={loading || error !== null}
+            >
+              {sortOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
               ))}
-            </div>
-          )}
-        </>
-      )}
-    </section>
+            </select>
+          </div>
+        </div>
+
+        {/* Chip de búsqueda activa (entra desde la barra del header) */}
+        {searchTerm && !loading && !error && (
+          <div className="products__search-info">
+            <span>
+              Resultados para <strong>"{searchTerm}"</strong> ({visibleProducts.length})
+            </span>
+            <button
+              type="button"
+              className="products__search-clear"
+              onClick={() => setSearchParams({})}
+            >
+              ✕ Limpiar búsqueda
+            </button>
+          </div>
+        )}
+
+        {/* Estado de carga: visible mientras espera la API */}
+        {loading && (
+          <p className="status-message status-message--loading" role="status">
+            Cargando productos...
+          </p>
+        )}
+
+        {/* Estado de error: visible si falla la red o la API responde mal */}
+        {!loading && error && (
+          <div className="status-message status-message--error" role="alert">
+            <p>{error}</p>
+            <button
+              type="button"
+              className="button button--secondary"
+              onClick={() => setRetryKey((key) => key + 1)}
+            >
+              Reintentar
+            </button>
+          </div>
+        )}
+
+        {/* Resultado normal */}
+        {!loading && !error && (
+          <>
+            {visibleProducts.length === 0 ? (
+              <p className="products__empty">
+                {searchTerm
+                  ? `No encontramos productos que coincidan con "${searchTerm}".`
+                  : `No hay productos en la categoría "${categoryFilter}".`}
+              </p>
+            ) : (
+              <div className="products__grid">
+                {visibleProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Atajo al carrito / inicio cuando no hay resultados */}
+        {!loading && !error && visibleProducts.length === 0 && (
+          <Link to="/" className="button button--secondary">
+            ← Volver al inicio
+          </Link>
+        )}
+      </div>
+    </div>
   );
 }
 

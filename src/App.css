@@ -422,13 +422,260 @@
   content: none;
 }
 
-/* ===== Página ProductDetail ===== */
+/* ===== Catálogo (sidebar de categorías + barra de ordenamiento + grilla) ===== */
 
-.product-detail__image {
-  font-size: 4rem;
+.products-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 26px;
+  align-items: start;
+  text-align: left;
 }
 
-.product-detail__image img {
+/* Panel lateral de filtros */
+.products__sidebar {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  padding: 18px 14px;
+  position: sticky;
+  top: 90px; /* por debajo del header sticky */
+}
+
+.products__sidebar h2 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+}
+
+.products__category-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.products__category-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 10px;
+  background: none;
+  font-family: inherit;
+  font-size: 0.97rem;
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.products__category-link:hover {
+  background: var(--color-bg);
+}
+
+.products__category-link.is-active {
+  background: rgba(232, 89, 12, 0.12);
+  color: var(--color-primary);
+  box-shadow: inset 3px 0 0 var(--color-primary);
+}
+
+.products__content {
+  min-width: 0;
+}
+
+/* Barra superior: título + ordenamiento */
+.products__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.products__topbar h1 {
+  margin: 0;
+  font-size: 1.7rem;
+}
+
+.products__sort {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.products__sort select {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface);
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.products__sort select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+/* Chip de búsqueda activa (entra desde la barra del header) */
+.products__search-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: rgba(232, 89, 12, 0.08);
+  border: 1px solid rgba(232, 89, 12, 0.25);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 18px;
+  font-size: 0.95rem;
+}
+
+.products__search-clear {
+  border: none;
+  background: none;
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.products__search-clear:hover {
+  text-decoration: underline;
+}
+
+.products__empty {
+  color: var(--color-text-light);
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+/* Grilla de tarjetas */
+.products__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 18px;
+}
+
+/* ===== Tarjeta de producto ===== */
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  text-align: left;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.1);
+}
+
+.product-card__link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Bloque de imagen: acepta <span> (emoji 📦) o <img> (foto real) */
+.product-card__image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 130px;
+  background: var(--color-bg);
+  border-radius: 10px;
+  font-size: 3.2rem;
+  overflow: hidden;
+  object-fit: cover;
+}
+
+.product-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-card__name {
+  margin: 4px 0 0;
+  font-size: 1.02rem;
+  line-height: 1.3;
+}
+
+.product-card__category {
+  align-self: flex-start;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.product-card__price {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.product-card__stock {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--color-text-light);
+}
+
+.product-card .button {
+  width: 100%;
+  margin-top: auto;
+}
+
+@media (max-width: 900px) {
+  .products-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .products__sidebar {
+    position: static;
+  }
+
+  .products__category-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .products__category-link {
+    width: auto;
+  }
+}
+
+/* ===== Página ProductDetail ===== */
+
+/* Funciona tanto con <span> (emoji) como con <img> (foto real):
+   ProductImage aplica la clase directamente al elemento. */
+.product-detail__image {
+  font-size: 4rem;
   max-width: 220px;
   max-height: 220px;
   border-radius: var(--radius);

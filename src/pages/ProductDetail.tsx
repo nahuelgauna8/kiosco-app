@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import type { Product } from "../types";
 import { ApiError, getProductById } from "../services/api";
 import { useCart } from "../context/CartContext";
+import ProductImage from "../components/ProductImage";
 
 // Página de detalle de producto.
 // El id viene de la URL (path param): /products/:id
@@ -125,9 +126,7 @@ function ProductDetail() {
 
   return (
     <section className="page product-detail">
-      <span className="product-detail__image" aria-hidden="true">
-        {product.image ?? "📦"}
-      </span>
+      <ProductImage product={product} className="product-detail__image" />
 
       <h1>{product.name}</h1>
 

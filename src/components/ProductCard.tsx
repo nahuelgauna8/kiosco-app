@@ -1,21 +1,22 @@
 import { Link } from "react-router-dom";
 import type { Product } from "../types";
 import { useCart } from "../context/CartContext";
+import ProductImage from "./ProductImage";
 
 interface ProductCardProps {
   product: Product;
 }
 
 // Tarjeta de un producto: link al detalle + botón "Agregar al carrito" (cantidad 1).
+// El bloque de imagen usa ProductImage, que queda preparado para recibir
+// fotos reales cuando se carguen (mientras tanto muestra un 📦).
 function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
 
   return (
     <article className="product-card">
       <Link to={`/products/${product.id}`} className="product-card__link">
-        <span className="product-card__image" aria-hidden="true">
-          {product.image ?? "📦"}
-        </span>
+        <ProductImage product={product} className="product-card__image" />
         <h2 className="product-card__name">{product.name}</h2>
       </Link>
 
