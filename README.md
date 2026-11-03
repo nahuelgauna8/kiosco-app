@@ -110,3 +110,6 @@ Esta Parte 1 avanza tarea por tarea, con un commit por tarea:
 
 > Las imágenes reales de productos y el banner se agregarán al final del proyecto
 > (`public/images/`); el componente `ProductImage` ya las renderiza automáticamente.
+
+> 📌 **Próxima fase (pendiente):** panel de administrador — decisiones de diseño
+> guardadas en [PLAN-ADMIN.md](PLAN-ADMIN.md). No se implementa hasta dar luz verde.
