@@ -2,10 +2,11 @@ import { Outlet, useLocation } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 import CategoryBar from "./CategoryBar";
+import CartDrawer from "./CartDrawer";
 
 // Layout global: Header (+ barra de categorías solo en el Home) + Footer.
 // Las páginas se renderizan dentro de <Outlet />.
-// (El panel lateral del carrito - CartDrawer - se suma en el commit R.3.)
+// CartDrawer vive acá para que el panel se pueda abrir desde cualquier ruta.
 function Layout() {
   const { pathname } = useLocation();
 
@@ -17,6 +18,7 @@ function Layout() {
         <Outlet />
       </main>
       <Footer />
+      <CartDrawer />
     </div>
   );
 }

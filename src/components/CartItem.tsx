@@ -1,12 +1,13 @@
 import type { CartItem as CartItemType } from "../types";
 import { useCart } from "../context/CartContext";
+import ProductImage from "./ProductImage";
 
 interface CartItemProps {
   item: CartItemType;
 }
 
-// Fila de un producto dentro del carrito:
-// permite cambiar la cantidad, ver el subtotal y eliminar el ítem.
+// Fila de un producto dentro del carrito (se usa en el panel lateral y en
+// la página /cart): imagen, nombre, control de cantidades, subtotal y eliminar.
 function CartItem({ item }: CartItemProps) {
   const { updateQuantity, removeFromCart } = useCart();
   const { product, quantity } = item;
@@ -21,56 +22,53 @@ function CartItem({ item }: CartItemProps) {
 
   return (
     <li className="cart-item">
-      <span className="cart-item__image" aria-hidden="true">
-        {product.image ?? "📦"}
-      </span>
+      <ProductImage product={product} className="cart-item__image" />
 
       <div className="cart-item__info">
         <span className="cart-item__name">{product.name}</span>
-        <span className="cart-item__price">
-          ${product.price.toLocaleString("es-AR")} c/u
+
+        <div className="cart-item__quantity">
+          <button
+            type="button"
+            className="cart-item__qty-button"
+            onClick={() => updateQuantity(product.id, quantity - 1)}
+            aria-label={`Restar un ${product.name}`}
+          >
+            −
+          </button>
+          <input
+            type="number"
+            min={1}
+            max={product.stock}
+            value={quantity}
+            onChange={handleQuantityChange}
+            aria-label={`Cantidad de ${product.name}`}
+          />
+          <button
+            type="button"
+            className="cart-item__qty-button"
+            onClick={() => updateQuantity(product.id, quantity + 1)}
+            aria-label={`Sumar un ${product.name}`}
+          >
+            +
+          </button>
+        </div>
+      </div>
+
+      <div className="cart-item__side">
+        <span className="cart-item__subtotal">
+          ${subtotal.toLocaleString("es-AR")}
         </span>
-      </div>
-
-      <div className="cart-item__quantity">
         <button
           type="button"
-          className="cart-item__qty-button"
-          onClick={() => updateQuantity(product.id, quantity - 1)}
-          aria-label={`Restar un ${product.name}`}
+          className="cart-item__remove"
+          onClick={() => removeFromCart(product.id)}
+          aria-label={`Eliminar ${product.name} del carrito`}
+          title="Eliminar del carrito"
         >
-          −
-        </button>
-        <input
-          type="number"
-          min={1}
-          max={product.stock}
-          value={quantity}
-          onChange={handleQuantityChange}
-          aria-label={`Cantidad de ${product.name}`}
-        />
-        <button
-          type="button"
-          className="cart-item__qty-button"
-          onClick={() => updateQuantity(product.id, quantity + 1)}
-          aria-label={`Sumar un ${product.name}`}
-        >
-          +
+          🗑️ Quitar
         </button>
       </div>
-
-      <span className="cart-item__subtotal">
-        ${subtotal.toLocaleString("es-AR")}
-      </span>
-
-      <button
-        type="button"
-        className="cart-item__remove"
-        onClick={() => removeFromCart(product.id)}
-        aria-label={`Eliminar ${product.name} del carrito`}
-      >
-        🗑️ Eliminar
-      </button>
     </li>
   );
 }

@@ -6,7 +6,7 @@ import { CATEGORIES } from "../data/categories";
 // Header global: logo + barra de búsqueda + navegación + botón del carrito.
 // La búsqueda lleva a /products?search=... (el catálogo filtra por nombre).
 function Header() {
-  const { totalItems } = useCart();
+  const { totalItems, openCart } = useCart();
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
 
@@ -75,11 +75,15 @@ function Header() {
             </div>
           </div>
 
-          {/* En la Tarea R.3 este link se reemplaza por un botón
-              que abre el panel lateral (drawer) del carrito. */}
-          <NavLink to="/cart" className="header__link header__cart-link">
-            Carrito ({totalItems})
-          </NavLink>
+          {/* Abre el panel lateral (drawer) del carrito, sin navegar de ruta. */}
+          <button
+            type="button"
+            className="header__link header__cart-link"
+            onClick={openCart}
+            aria-label="Abrir el carrito"
+          >
+            Carrito <span className="header__cart-count">({totalItems})</span>
+          </button>
         </nav>
       </div>
     </header>

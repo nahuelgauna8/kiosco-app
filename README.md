@@ -94,3 +94,12 @@ Esta Parte 1 avanza tarea por tarea, con un commit por tarea:
 - [x] **Tarea 2.2** – Endpoints GET de productos
 - [x] **Tarea 2.3** – Endpoint POST de pedidos (descuento de stock)
 - [x] **Tarea 2.4** – Integración frontend ↔ API con loading y errores visibles
+
+### 🎨 Rediseño de interfaz (fase 2)
+
+- [x] **R.1** – Header nuevo (búsqueda + menú Categorías + botón de carrito), barra de categorías y Home exclusivamente de bienvenida con banner + CTA
+- [x] **R.2** – Catálogo con sidebar de categorías, barra de ordenamiento, búsqueda por nombre y tarjetas preparadas para imágenes reales (`public/images/`)
+- [x] **R.3** – Carrito como panel lateral (drawer) deslizante con resumen, cantidades y total con impuestos
+
+> Las imágenes reales de productos y el banner se agregarán al final del proyecto
+> (`public/images/`); el componente `ProductImage` ya las renderiza automáticamente.

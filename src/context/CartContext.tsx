@@ -17,12 +17,22 @@ interface CartContextValue {
   clearCart: () => void;
   totalItems: number;
   totalPrice: number;
+  // Estado del panel lateral (drawer): se abre desde el botón del header.
+  isCartOpen: boolean;
+  openCart: () => void;
+  closeCart: () => void;
 }
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+
+  // ¿Está abierto el panel lateral del carrito?
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const openCart = useCallback(() => setIsCartOpen(true), []);
+  const closeCart = useCallback(() => setIsCartOpen(false), []);
 
   // Agrega un producto. Si ya está en el carrito, suma la cantidad.
   const addToCart = useCallback((product: Product, quantity: number = 1) => {
@@ -80,8 +90,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
       clearCart,
       totalItems,
       totalPrice,
+      isCartOpen,
+      openCart,
+      closeCart,
     }),
-    [items, addToCart, removeFromCart, updateQuantity, clearCart, totalItems, totalPrice],
+    [
+      items,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart,
+      totalItems,
+      totalPrice,
+      isCartOpen,
+      openCart,
+      closeCart,
+    ],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
