@@ -60,7 +60,12 @@ function Cart() {
             ⚠️ {orderError}
           </p>
         ) : orderMessage ? (
-          <p className="cart__message cart__message--success">{orderMessage}</p>
+          <div className="cart__order-done">
+            <p className="cart__message cart__message--success">{orderMessage}</p>
+            <Link to="/orders" className="button button--secondary">
+              Ver mis pedidos
+            </Link>
+          </div>
         ) : (
           <p>Tu carrito está vacío.</p>
         )}

@@ -118,3 +118,8 @@ export async function createOrder(items: OrderItemInput[]): Promise<Order> {
     body: JSON.stringify({ items }),
   });
 }
+
+// GET /api/orders (lista de pedidos, del más reciente al más antiguo)
+export async function getOrders(): Promise<Order[]> {
+  return request<Order[]>("/orders");
+}

@@ -54,6 +54,9 @@ function Header() {
           <NavLink to="/products" className="header__link">
             Productos
           </NavLink>
+          <NavLink to="/orders" className="header__link">
+            Mis pedidos
+          </NavLink>
 
           <div className="header__dropdown">
             <button
