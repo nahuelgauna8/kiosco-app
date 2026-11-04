@@ -109,13 +109,14 @@ function Header() {
 
           {/* Icono de ajustes: solo visible para clientes / sin sesión de admin.
                Se oculta cuando el administrador está logueado (ya ve "Modo admin" y
-               "Cerrar sesión"). Redirige a la sección de configuración. */}
+               "Cerrar sesión"). Redirige al panel de administración para iniciar
+               sesión o ingresar al panel. */}
           {!isAdmin && (
             <Link
-              to="/admin/settings"
+              to="/admin"
               className="header__settings-link"
-              title="Ajustes"
-              aria-label="Ajustes"
+              title="Ir al panel de administración"
+              aria-label="Panel de administración"
             >
               <Settings size={17} aria-hidden="true" />
             </Link>
