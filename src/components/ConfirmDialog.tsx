@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { TriangleAlert } from "lucide-react";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -65,7 +66,8 @@ function ConfirmDialog({
         onClick={(event) => event.stopPropagation()}
       >
         <h2 className="confirm__title" id="confirm-dialog-title">
-          ⚠️ {title}
+          <TriangleAlert size={20} aria-hidden="true" />
+          {title}
         </h2>
         <p className="confirm__message" id="confirm-dialog-message">
           {message}

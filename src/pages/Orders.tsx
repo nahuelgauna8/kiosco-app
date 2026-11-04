@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { LoaderCircle, Receipt, Trash2, TriangleAlert } from "lucide-react";
 import type { Order } from "../types";
 import { ApiError, deleteOrders, getOrders } from "../services/api";
 import ConfirmDialog from "../components/ConfirmDialog";
@@ -102,7 +103,8 @@ function Orders() {
             disabled={deleting}
             ref={clearButtonRef}
           >
-            🗑️ Borrar historial
+            <Trash2 size={16} aria-hidden="true" />
+            Borrar historial
           </button>
         )}
       </div>
@@ -129,6 +131,11 @@ function Orders() {
       {/* Estado de carga */}
       {loading && (
         <p className="status-message status-message--loading" role="status">
+          <LoaderCircle
+            className="status-message__spinner"
+            size={18}
+            aria-hidden="true"
+          />
           Cargando pedidos...
         </p>
       )}
@@ -136,6 +143,7 @@ function Orders() {
       {/* Estado de error */}
       {!loading && error && (
         <div className="status-message status-message--error" role="alert">
+          <TriangleAlert size={22} aria-hidden="true" />
           <p>{error}</p>
           <button
             type="button"
@@ -163,7 +171,10 @@ function Orders() {
           {orders.map((order) => (
             <li key={order.id} className="order-card">
               <div className="order-card__header">
-                <span className="order-card__id">Pedido #{order.id}</span>
+                <span className="order-card__id">
+                  <Receipt size={15} aria-hidden="true" />
+                  Pedido #{order.id}
+                </span>
                 <span className="order-card__date">
                   {formatFecha(order.created_at)}
                 </span>

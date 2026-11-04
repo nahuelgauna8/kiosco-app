@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { ArrowRight, Cookie, CupSoda, Popcorn, Store } from "lucide-react";
 
 // Página de presentación: exclusivamente bienvenida + llamado a la acción.
 // (No se muestran productos acá: el catálogo vive en /products).
 function Home() {
   // Imagen del banner (se agrega al final del proyecto):
   //   public/images/banner-home.jpg
-  // Si todavía no existe, se muestra el fondo de respaldo (gradiente cálido).
+  // Si todavía no existe, se muestra el fondo de respaldo (gradiente cálido
+  // con iconos vectoriales del kiosco).
   const [bannerOk, setBannerOk] = useState(true);
 
   return (
@@ -22,7 +24,10 @@ function Home() {
 
       {!bannerOk && (
         <div className="hero__fallback" aria-hidden="true">
-          🏪 🥤 🍟 🍪
+          <Store size={64} strokeWidth={1.5} />
+          <CupSoda size={64} strokeWidth={1.5} />
+          <Popcorn size={64} strokeWidth={1.5} />
+          <Cookie size={64} strokeWidth={1.5} />
         </div>
       )}
 
@@ -39,6 +44,7 @@ function Home() {
         </p>
         <Link to="/products" className="button button--light button--big">
           Explorar Productos
+          <ArrowRight size={18} aria-hidden="true" />
         </Link>
       </div>
     </section>
