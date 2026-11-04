@@ -1,4 +1,5 @@
 import { type FormEvent, useState } from "react";
+import { CircleCheck, LoaderCircle, Plus, TriangleAlert } from "lucide-react";
 import ProductFormFields from "./ProductFormFields";
 import {
   formErrorMessage,
@@ -67,11 +68,13 @@ function ProductCreateForm({ onCreated }: ProductCreateFormProps) {
 
       {notice && (
         <p className="form-success" role="status">
-          ✅ {notice}
+          <CircleCheck size={16} aria-hidden="true" />
+          {notice}
         </p>
       )}
       {error && (
         <p className="form-error" role="alert">
+          <TriangleAlert size={16} aria-hidden="true" />
           {error}
         </p>
       )}
@@ -82,7 +85,21 @@ function ProductCreateForm({ onCreated }: ProductCreateFormProps) {
           className="button button--primary"
           disabled={submitting}
         >
-          {submitting ? "Guardando..." : "➕ Agregar producto"}
+          {submitting ? (
+            <>
+              <LoaderCircle
+                className="status-message__spinner"
+                size={16}
+                aria-hidden="true"
+              />
+              Guardando...
+            </>
+          ) : (
+            <>
+              <Plus size={16} aria-hidden="true" />
+              Agregar producto
+            </>
+          )}
         </button>
       </div>
     </form>

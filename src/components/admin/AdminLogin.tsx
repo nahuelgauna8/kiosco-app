@@ -1,5 +1,6 @@
 import { type FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
+import { ArrowLeft, LoaderCircle, LockKeyhole, TriangleAlert } from "lucide-react";
 import { useAdmin } from "../../context/AdminContext";
 import { ApiError } from "../../services/api";
 
@@ -38,7 +39,10 @@ function AdminLogin() {
 
   return (
     <section className="page admin-login">
-      <h1>🔧 Ingreso administrador</h1>
+      <h1>
+        <LockKeyhole size={26} strokeWidth={2.25} aria-hidden="true" />
+        Ingreso administrador
+      </h1>
       <p className="admin-login__hint">
         Ingresá la clave de acceso del kiosco.
       </p>
@@ -59,6 +63,7 @@ function AdminLogin() {
 
         {error && (
           <p className="form-error" role="alert">
+            <TriangleAlert size={16} aria-hidden="true" />
             {error}
           </p>
         )}
@@ -68,12 +73,27 @@ function AdminLogin() {
           className="button button--primary"
           disabled={submitting}
         >
-          {submitting ? "Verificando..." : "Ingresar"}
+          {submitting ? (
+            <>
+              <LoaderCircle
+                className="status-message__spinner"
+                size={16}
+                aria-hidden="true"
+              />
+              Verificando...
+            </>
+          ) : (
+            <>
+              <LockKeyhole size={16} aria-hidden="true" />
+              Ingresar
+            </>
+          )}
         </button>
       </form>
 
       <Link to="/" className="button button--secondary">
-        ← Volver al inicio
+        <ArrowLeft size={16} aria-hidden="true" />
+        Volver al inicio
       </Link>
     </section>
   );

@@ -1,3 +1,4 @@
+import { Package, Receipt, TriangleAlert, Wallet } from "lucide-react";
 import type { AdminStats } from "../../types";
 
 interface DashboardStatsProps {
@@ -13,13 +14,17 @@ function DashboardStats({ stats }: DashboardStatsProps) {
     <>
       <div className="admin__stats">
         <div className="stat-card">
-          <span className="stat-card__icon" aria-hidden="true">🧾</span>
+          <span className="stat-card__icon" aria-hidden="true">
+            <Receipt size={26} strokeWidth={1.75} />
+          </span>
           <p className="stat-card__value">{stats.orders_today}</p>
           <p className="stat-card__label">Pedidos de hoy</p>
         </div>
 
         <div className="stat-card">
-          <span className="stat-card__icon" aria-hidden="true">💰</span>
+          <span className="stat-card__icon" aria-hidden="true">
+            <Wallet size={26} strokeWidth={1.75} />
+          </span>
           <p className="stat-card__value">
             ${stats.revenue_today.toLocaleString("es-AR")}
           </p>
@@ -27,13 +32,17 @@ function DashboardStats({ stats }: DashboardStatsProps) {
         </div>
 
         <div className="stat-card">
-          <span className="stat-card__icon" aria-hidden="true">📦</span>
+          <span className="stat-card__icon" aria-hidden="true">
+            <Package size={26} strokeWidth={1.75} />
+          </span>
           <p className="stat-card__value">{stats.total_products}</p>
           <p className="stat-card__label">Productos en catálogo</p>
         </div>
 
         <div className={`stat-card${hasLowStock ? " stat-card--alert" : ""}`}>
-          <span className="stat-card__icon" aria-hidden="true">⚠️</span>
+          <span className="stat-card__icon" aria-hidden="true">
+            <TriangleAlert size={26} strokeWidth={1.75} />
+          </span>
           <p className="stat-card__value">{stats.low_stock.length}</p>
           <p className="stat-card__label">Por agotarse (menos de 5)</p>
         </div>
@@ -41,7 +50,10 @@ function DashboardStats({ stats }: DashboardStatsProps) {
 
       {hasLowStock && (
         <div className="admin__lowstock">
-          <h3>⚠️ Productos con stock bajo</h3>
+          <h3>
+            <TriangleAlert size={18} aria-hidden="true" />
+            Productos con stock bajo
+          </h3>
           <ul>
             {stats.low_stock.map((product) => (
               <li key={product.id}>

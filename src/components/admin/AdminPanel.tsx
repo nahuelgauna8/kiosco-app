@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  BarChart3,
+  CirclePlus,
+  LayoutDashboard,
+  LoaderCircle,
+  LogOut,
+  Store,
+  TriangleAlert,
+} from "lucide-react";
 import { useAdmin } from "../../context/AdminContext";
 import type { AdminStats } from "../../types";
 import { adminGetStats, ApiError } from "../../services/api";
@@ -56,9 +65,13 @@ function AdminPanel() {
   return (
     <section className="page admin-panel">
       <div className="admin__topbar">
-        <h1>🔧 Panel de administración</h1>
+        <h1>
+          <LayoutDashboard size={26} strokeWidth={2.25} aria-hidden="true" />
+          Panel de administración
+        </h1>
         <div className="admin__topbar-actions">
           <Link to="/products" className="button button--secondary">
+            <Store size={16} aria-hidden="true" />
             Ver catálogo
           </Link>
           <button
@@ -66,6 +79,7 @@ function AdminPanel() {
             className="button button--secondary"
             onClick={logout}
           >
+            <LogOut size={16} aria-hidden="true" />
             Cerrar sesión
           </button>
         </div>
@@ -73,16 +87,25 @@ function AdminPanel() {
 
       {/* ===== Resumen del dashboard ===== */}
       <section className="admin__section" aria-labelledby="admin-stats-title">
-        <h2 id="admin-stats-title">📊 Resumen</h2>
+        <h2 id="admin-stats-title">
+          <BarChart3 size={20} aria-hidden="true" />
+          Resumen
+        </h2>
 
         {loading && (
           <p className="status-message status-message--loading" role="status">
+            <LoaderCircle
+              className="status-message__spinner"
+              size={18}
+              aria-hidden="true"
+            />
             Cargando resumen...
           </p>
         )}
 
         {!loading && error && (
           <div className="status-message status-message--error" role="alert">
+            <TriangleAlert size={22} aria-hidden="true" />
             <p>{error}</p>
             <button
               type="button"
@@ -99,7 +122,10 @@ function AdminPanel() {
 
       {/* ===== Carga de productos nuevos ===== */}
       <section className="admin__section" aria-labelledby="admin-create-title">
-        <h2 id="admin-create-title">➕ Cargar producto nuevo</h2>
+        <h2 id="admin-create-title">
+          <CirclePlus size={20} aria-hidden="true" />
+          Cargar producto nuevo
+        </h2>
         <ProductCreateForm onCreated={() => setRetryKey((key) => key + 1)} />
       </section>
     </section>

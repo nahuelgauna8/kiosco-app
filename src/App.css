@@ -1359,6 +1359,9 @@
 
 .modal__title {
   margin: 0 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 1.3rem;
 }
 
@@ -1449,6 +1452,10 @@
 
 .admin-login h1 {
   margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   font-size: 1.6rem;
 }
 
@@ -1555,6 +1562,9 @@
 
 .admin__topbar h1 {
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 1.6rem;
 }
 
@@ -1573,6 +1583,9 @@
 
 .admin__section h2 {
   margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 1.2rem;
 }
 
@@ -1592,7 +1605,13 @@
 }
 
 .stat-card__icon {
-  font-size: 1.4rem;
+  display: block;
+  margin: 0 auto;
+  color: var(--color-primary);
+}
+
+.stat-card--alert .stat-card__icon {
+  color: var(--color-danger);
 }
 
 .stat-card__value {
@@ -1625,6 +1644,9 @@
 
 .admin__lowstock h3 {
   margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
   font-size: 1rem;
   color: var(--color-danger);
 }

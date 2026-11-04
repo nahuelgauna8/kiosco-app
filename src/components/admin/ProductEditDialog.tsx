@@ -1,4 +1,5 @@
 import { useRef, useState, type FormEvent } from "react";
+import { Pencil, TriangleAlert } from "lucide-react";
 import Modal from "../Modal";
 import ProductFormFields from "./ProductFormFields";
 import {
@@ -59,7 +60,8 @@ function ProductEditDialog({ product, onSaved, onClose }: ProductEditDialogProps
     >
       <form className="product-form" onSubmit={handleSubmit}>
         <h2 className="modal__title" id="product-edit-title">
-          ✏️ Editar producto
+          <Pencil size={20} aria-hidden="true" />
+          Editar producto
         </h2>
         <p className="modal__subtitle" id="product-edit-hint">
           Modificá los campos que quieras y guardá los cambios.
@@ -69,6 +71,7 @@ function ProductEditDialog({ product, onSaved, onClose }: ProductEditDialogProps
 
         {error && (
           <p className="form-error" role="alert">
+            <TriangleAlert size={16} aria-hidden="true" />
             {error}
           </p>
         )}

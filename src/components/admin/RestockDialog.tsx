@@ -1,4 +1,5 @@
 import { useRef, useState, type FormEvent } from "react";
+import { PackagePlus, TriangleAlert } from "lucide-react";
 import Modal from "../Modal";
 import { formErrorMessage } from "./productForm";
 import { adminRestockProduct } from "../../services/api";
@@ -53,7 +54,8 @@ function RestockDialog({ product, onSaved, onClose }: RestockDialogProps) {
     >
       <form className="product-form" onSubmit={handleSubmit}>
         <h2 className="modal__title" id="product-restock-title">
-          📦 Reponer stock
+          <PackagePlus size={20} aria-hidden="true" />
+          Reponer stock
         </h2>
         <p className="modal__subtitle">
           <strong>{product.name}</strong> — stock actual:{" "}
@@ -76,6 +78,7 @@ function RestockDialog({ product, onSaved, onClose }: RestockDialogProps) {
 
         {error && (
           <p className="form-error" role="alert">
+            <TriangleAlert size={16} aria-hidden="true" />
             {error}
           </p>
         )}
