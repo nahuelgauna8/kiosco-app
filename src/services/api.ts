@@ -83,17 +83,8 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
         ...(isFormData ? {} : { "Content-Type": "application/json" }),
         ...options.headers,
       },
-      // Si el backend no responde en 8 segundos, se corta (timeout visible).
-      signal: options.signal ?? AbortSignal.timeout(8000),
     });
   } catch (error) {
-    if (error instanceof DOMException && error.name === "TimeoutError") {
-      throw new ApiError(
-        "El servidor tardó demasiado en responder. Intentá de nuevo.",
-        0,
-      );
-    }
-
     // Servidor caído, sin conexión o bloqueo de CORS: cualquier fetch rechazado.
     throw new ApiError(
       "No se pudo conectar con el servidor. Verificá que el backend esté corriendo.",
