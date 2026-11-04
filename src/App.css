@@ -1558,6 +1558,11 @@
   font-size: 0.8rem;
   font-weight: 700;
   white-space: nowrap;
+  text-decoration: none;
+}
+
+.header__admin-badge:hover {
+  background: var(--color-primary-dark);
 }
 
 /* Pantalla de ingreso de administrador */
