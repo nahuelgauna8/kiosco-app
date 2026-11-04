@@ -73,16 +73,17 @@ function Header() {
             Mis pedidos
           </NavLink>
 
-          {/* Sesión de administrador activa: badge + cierre de sesión */}
+          {/* Sesión de administrador activa: enlace al panel principal + cierre de sesión */}
           {isAdmin && (
             <>
-              <span
+              <Link
+                to="/admin"
                 className="header__admin-badge"
-                title="Sesión de administrador activa"
+                title="Ir al panel de administración"
               >
                 <Wrench size={14} aria-hidden="true" />
                 Modo admin
-              </span>
+              </Link>
               <button
                 type="button"
                 className="header__link"
