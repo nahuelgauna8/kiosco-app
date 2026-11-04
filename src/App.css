@@ -423,13 +423,24 @@
 }
 
 .status-message--loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   background: #fff9db;
   color: #997404;
   border: 1px solid #ffe066;
 }
 
-.status-message--loading::before {
-  content: "⏳ ";
+/* Spinner animado del estado de carga (icono LoaderCircle) */
+.status-message__spinner {
+  flex-shrink: 0;
+  animation: status-spin 1s linear infinite;
+}
+
+@keyframes status-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .status-message--error {
@@ -442,16 +453,8 @@
   gap: 12px;
 }
 
-.status-message--error::before {
-  content: "⚠️ ";
-}
-
 .status-message--error p {
   margin: 0;
-}
-
-.status-message--error .button::before {
-  content: none;
 }
 
 /* ===== Catálogo (sidebar de categorías + barra de ordenamiento + grilla) ===== */
@@ -575,6 +578,9 @@
 }
 
 .products__search-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   border: none;
   background: none;
   color: var(--color-primary);
@@ -628,7 +634,7 @@
   color: inherit;
 }
 
-/* Bloque de imagen: acepta <span> (emoji 📦) o <img> (foto real) */
+/* Bloque de imagen: acepta <span> (icono Package) o <img> (foto real) */
 .product-card__image {
   display: flex;
   align-items: center;
@@ -681,6 +687,9 @@
 /* Alerta de stock bajo (solo en modo admin): quedan menos de 5 unidades */
 .product-card__lowstock {
   align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   background: #fff9db;
   color: #997404;
   border: 1px solid #ffe066;
@@ -699,6 +708,10 @@
 .product-card__admin-btn {
   flex: 1 1 0;
   min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   padding: 7px 6px;
   font-size: 0.8rem;
   font-weight: 600;
@@ -739,7 +752,15 @@
   font-size: 0.92rem;
 }
 
+.products__admin-notice > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .products__admin-notice button {
+  display: inline-flex;
+  align-items: center;
   background: none;
   border: none;
   color: inherit;
@@ -774,7 +795,7 @@
 
 /* ===== Página ProductDetail ===== */
 
-/* Funciona tanto con <span> (emoji) como con <img> (foto real):
+/* Funciona tanto con <span> (icono Package) como con <img> (foto real):
    ProductImage aplica la clase directamente al elemento. */
 .product-detail__image {
   font-size: 4rem;
@@ -878,7 +899,7 @@
   text-align: left;
 }
 
-/* Imagen: acepta <span> (emoji 📦) o <img> (foto real) */
+/* Imagen: acepta <span> (icono Package) o <img> (foto real) */
 .cart-item__image {
   flex: 0 0 auto;
   display: flex;
@@ -1463,6 +1484,9 @@
 /* Mensaje de error de formularios */
 .form-error {
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   background: #fff5f5;
   color: var(--color-danger);
   border: 1px solid #ffc9c9;
@@ -1475,6 +1499,9 @@
 /* Mensaje de éxito de formularios */
 .form-success {
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   background: #ebfbee;
   color: var(--color-success);
   border: 1px solid #b2f2bb;

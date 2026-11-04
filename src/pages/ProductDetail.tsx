@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { ArrowLeft, LoaderCircle, ShoppingCart, TriangleAlert } from "lucide-react";
 import type { Product } from "../types";
 import { ApiError, getProductById } from "../services/api";
 import { useCart } from "../context/CartContext";
@@ -73,6 +74,11 @@ function ProductDetail() {
     return (
       <section className="page">
         <p className="status-message status-message--loading" role="status">
+          <LoaderCircle
+            className="status-message__spinner"
+            size={18}
+            aria-hidden="true"
+          />
           Cargando producto...
         </p>
       </section>
@@ -84,6 +90,7 @@ function ProductDetail() {
     return (
       <section className="page">
         <div className="status-message status-message--error" role="alert">
+          <TriangleAlert size={22} aria-hidden="true" />
           <p>{error}</p>
           <button
             type="button"
@@ -94,6 +101,7 @@ function ProductDetail() {
           </button>
         </div>
         <Link to="/products" className="button button--primary">
+          <ArrowLeft size={16} aria-hidden="true" />
           Volver al catálogo
         </Link>
       </section>
@@ -107,6 +115,7 @@ function ProductDetail() {
         <h1>Producto no encontrado</h1>
         <p>No encontramos el producto con id "{id}".</p>
         <Link to="/products" className="button button--primary">
+          <ArrowLeft size={16} aria-hidden="true" />
           Volver al catálogo
         </Link>
       </section>
@@ -159,12 +168,14 @@ function ProductDetail() {
           onClick={handleAddToCart}
           disabled={product.stock === 0}
         >
+          <ShoppingCart size={16} aria-hidden="true" />
           Agregar al carrito
         </button>
       </div>
 
       <Link to="/products" className="button button--secondary">
-        ← Volver al catálogo
+        <ArrowLeft size={16} aria-hidden="true" />
+        Volver al catálogo
       </Link>
     </section>
   );

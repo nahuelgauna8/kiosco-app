@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { PackagePlus, Pencil, ShoppingCart, Trash2, TriangleAlert } from "lucide-react";
 import type { Product } from "../types";
 import { useCart } from "../context/CartContext";
 import { LOW_STOCK_THRESHOLD } from "../data/constants";
@@ -43,7 +44,10 @@ function ProductCard({ product, adminActions }: ProductCardProps) {
       </p>
 
       {adminActions && isLowStock && (
-        <span className="product-card__lowstock">⚠️ Stock bajo</span>
+        <span className="product-card__lowstock">
+          <TriangleAlert size={14} aria-hidden="true" />
+          Stock bajo
+        </span>
       )}
 
       <button
@@ -52,6 +56,7 @@ function ProductCard({ product, adminActions }: ProductCardProps) {
         onClick={() => addToCart(product, 1)}
         disabled={product.stock === 0}
       >
+        <ShoppingCart size={16} aria-hidden="true" />
         Agregar al carrito
       </button>
 
@@ -63,21 +68,24 @@ function ProductCard({ product, adminActions }: ProductCardProps) {
             className="product-card__admin-btn"
             onClick={() => adminActions.onEdit(product)}
           >
-            ✏️ Editar
+            <Pencil size={14} aria-hidden="true" />
+            Editar
           </button>
           <button
             type="button"
             className="product-card__admin-btn"
             onClick={() => adminActions.onRestock(product)}
           >
-            📦 Reponer
+            <PackagePlus size={14} aria-hidden="true" />
+            Reponer
           </button>
           <button
             type="button"
             className="product-card__admin-btn product-card__admin-btn--danger"
             onClick={() => adminActions.onDelete(product)}
           >
-            🗑️ Eliminar
+            <Trash2 size={14} aria-hidden="true" />
+            Eliminar
           </button>
         </div>
       )}

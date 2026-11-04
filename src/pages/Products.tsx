@@ -1,6 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
+import {
+  ArrowLeft,
+  CircleCheck,
+  LoaderCircle,
+  ShoppingCart,
+  TriangleAlert,
+  X,
+} from "lucide-react";
 import ProductCard from "../components/ProductCard";
 import ConfirmDialog from "../components/ConfirmDialog";
 import ProductEditDialog from "../components/admin/ProductEditDialog";
@@ -245,19 +252,23 @@ function Products() {
         {/* Avisos de las acciones de administración (éxito o error) */}
         {adminNotice && (
           <div className="products__admin-notice" role="status">
-            <span>✅ {adminNotice}</span>
+            <span>
+              <CircleCheck size={16} aria-hidden="true" />
+              {adminNotice}
+            </span>
             <button
               type="button"
               onClick={() => setAdminNotice(null)}
               aria-label="Cerrar aviso"
             >
-              ✕
+              <X size={16} aria-hidden="true" />
             </button>
           </div>
         )}
         {adminError && (
           <p className="form-error" role="alert">
-            ⚠️ {adminError}
+            <TriangleAlert size={16} aria-hidden="true" />
+            {adminError}
           </p>
         )}
 
@@ -272,7 +283,8 @@ function Products() {
               className="products__search-clear"
               onClick={() => setSearchParams({})}
             >
-              ✕ Limpiar búsqueda
+              <X size={15} aria-hidden="true" />
+              Limpiar búsqueda
             </button>
           </div>
         )}
@@ -280,6 +292,11 @@ function Products() {
         {/* Estado de carga: visible mientras espera la API */}
         {loading && (
           <p className="status-message status-message--loading" role="status">
+            <LoaderCircle
+              className="status-message__spinner"
+              size={18}
+              aria-hidden="true"
+            />
             Cargando productos...
           </p>
         )}
@@ -287,6 +304,7 @@ function Products() {
         {/* Estado de error: visible si falla la red o la API responde mal */}
         {!loading && error && (
           <div className="status-message status-message--error" role="alert">
+            <TriangleAlert size={22} aria-hidden="true" />
             <p>{error}</p>
             <button
               type="button"
@@ -324,7 +342,8 @@ function Products() {
         {/* Atajo al carrito / inicio cuando no hay resultados */}
         {!loading && !error && visibleProducts.length === 0 && (
           <Link to="/" className="button button--secondary">
-            ← Volver al inicio
+            <ArrowLeft size={16} aria-hidden="true" />
+            Volver al inicio
           </Link>
         )}
       </div>
