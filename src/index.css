@@ -36,6 +36,10 @@ body {
   background-color: var(--color-page);
   background-image: radial-gradient(var(--color-page-dot) 1px, transparent 1px);
   background-size: 16px 16px;
+  /* Red de seguridad contra desborde horizontal: si algún elemento se
+     desmide, la página nunca muestra scroll lateral. Se aplica en body
+     (y no en un contenedor interno) para no romper el header sticky. */
+  overflow-x: hidden;
 }
 
 a {

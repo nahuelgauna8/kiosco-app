@@ -35,6 +35,9 @@
   margin: 0 auto;
   padding: 12px 20px;
   display: flex;
+  /* Si la fila (logo + búsqueda + nav) no entra, el nav baja a una segunda
+     fila en vez de desbordar el ancho del viewport. */
+  flex-wrap: wrap;
   align-items: center;
   gap: 20px;
 }
@@ -54,6 +57,9 @@
 .header__search {
   flex: 1;
   max-width: 480px;
+  /* Sin esto, min-width:auto = ancho mínimo del input (~235px) y la fila
+     del header no puede comprimirse en pantallas medianas. */
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 0;
@@ -109,6 +115,10 @@
   align-items: center;
   gap: 4px;
   margin-left: auto;
+  /* En pantallas angostas (o con "Modo admin" activo que ensancha el nav)
+     los links se apilan en varias líneas en vez de salirse del viewport. */
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .header__link {
