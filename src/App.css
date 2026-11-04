@@ -1346,6 +1346,145 @@
   font-size: 0.92rem;
 }
 
+/* Mensaje de éxito de formularios */
+.form-success {
+  margin: 0;
+  background: #ebfbee;
+  color: var(--color-success);
+  border: 1px solid #b2f2bb;
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+/* Panel de administración: resumen + carga de productos */
+.admin-panel {
+  text-align: left;
+  display: grid;
+  gap: 24px;
+}
+
+.admin__topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin__topbar h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.admin__topbar-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin__section {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.admin__section h2 {
+  margin: 0 0 16px;
+  font-size: 1.2rem;
+}
+
+/* Tarjetas del dashboard */
+.admin__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.stat-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-card__icon {
+  font-size: 1.4rem;
+}
+
+.stat-card__value {
+  margin: 6px 0 2px;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.stat-card__label {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--color-text-light);
+}
+
+/* Estado de alerta: hay productos por agotarse */
+.stat-card--alert {
+  background: #fff5f5;
+  border-color: #ffc9c9;
+}
+
+.stat-card--alert .stat-card__value {
+  color: var(--color-danger);
+}
+
+/* Lista de productos con stock bajo */
+.admin__lowstock {
+  margin-top: 16px;
+}
+
+.admin__lowstock h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  color: var(--color-danger);
+}
+
+.admin__lowstock ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.admin__lowstock li {
+  background: #fff5f5;
+  border: 1px solid #ffc9c9;
+  color: var(--color-danger);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+/* Formularios de productos (alta en /admin y edición en el catálogo) */
+.product-form {
+  display: grid;
+  gap: 14px;
+}
+
+.form-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.product-form__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
 /* ===== Responsive ===== */
 
 @media (max-width: 900px) {
