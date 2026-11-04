@@ -12,6 +12,7 @@ import {
 import { useAdmin } from "../../context/AdminContext";
 import type { AdminStats } from "../../types";
 import { adminGetStats, ApiError } from "../../services/api";
+import { subscribeNewOrder } from "../../services/orderEvents";
 import DashboardStats from "./DashboardStats";
 import ProductCreateForm from "./ProductCreateForm";
 
@@ -61,6 +62,14 @@ function AdminPanel() {
       cancelled = true;
     };
   }, [retryKey]);
+
+  // Si desde otra pestaña se crea un pedido, refrescamos las stats aquí.
+  useEffect(() => {
+    const unsubscribe = subscribeNewOrder(() => {
+      setRetryKey((key) => key + 1);
+    });
+    return unsubscribe;
+  }, []);
 
   return (
     <section className="page admin-panel">

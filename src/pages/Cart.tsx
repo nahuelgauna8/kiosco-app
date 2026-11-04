@@ -10,6 +10,7 @@ import {
 import CartItem from "../components/CartItem";
 import { useCart } from "../context/CartContext";
 import { ApiError, createOrder } from "../services/api";
+import { notifyNewOrder } from "../services/orderEvents";
 
 // Página del carrito: listado, cantidades, total y acciones.
 function Cart() {
@@ -39,6 +40,9 @@ function Cart() {
         `¡Pedido #${order.id} confirmado! Llevás ${order.items.length} producto(s) por $${order.total.toLocaleString("es-AR")}. ¡Gracias por tu compra!`,
       );
       clearCart();
+      // Notifica a cualquier pestaña del Panel de Administración para que
+      // refresque las métricas del dashboard sin recargar la página.
+      notifyNewOrder();
     } catch (err: unknown) {
       // Error visible en pantalla: stock insuficiente, validación o red caída.
       setOrderError(

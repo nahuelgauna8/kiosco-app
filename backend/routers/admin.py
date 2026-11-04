@@ -205,10 +205,14 @@ def upload_product_image(
 def get_stats(db: Session = Depends(get_db)):
     """Resumen del dashboard: pedidos del día, ingresos y stock bajo.
 
-    created_at se guarda en UTC (CURRENT_TIMESTAMP), por eso se convierte
-    a hora local con date(..., 'localtime') antes de comparar con "hoy".
+    created_at se guarda en UTC (CURRENT_TIMESTAMP), por eso se compara
+    directamente en UTC contra la fecha de hoy del servidor. Se evita
+    usar "localtime" en created_at porque convertiría la hora del pedido
+    a la zona horaria del servidor y podría atribuirlo al día anterior
+    (ej: un pedido a las 00:30 UTC en zona UTC-3 es del día anterior
+    en hora local).
     """
-    is_today = func.date(Order.created_at, "localtime") == func.date("now", "localtime")
+    is_today = func.date(Order.created_at) == func.date("now")
 
     orders_today = (
         db.scalar(select(func.count()).select_from(Order).where(is_today)) or 0
