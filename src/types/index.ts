@@ -41,3 +41,37 @@ export interface Order {
   total: number;
   items: OrderItemDetail[];
 }
+
+// ===== Administración (API - panel admin) =====
+
+// Respuesta de POST /api/admin/login (expires_at en segundos Unix)
+export interface AdminSession {
+  token: string;
+  expires_at: number;
+}
+
+// Body para crear/editar un producto desde el panel de administración
+export interface ProductInput {
+  name: string;
+  category: Category;
+  price: number;
+  stock: number;
+  description: string;
+  image?: string;
+}
+
+// Producto con stock bajo (alerta del dashboard y del catálogo)
+export interface LowStockProduct {
+  id: number;
+  name: string;
+  stock: number;
+}
+
+// Respuesta de GET /api/admin/stats (resumen del dashboard)
+export interface AdminStats {
+  orders_today: number;
+  revenue_today: number;
+  total_orders: number;
+  total_products: number;
+  low_stock: LowStockProduct[];
+}

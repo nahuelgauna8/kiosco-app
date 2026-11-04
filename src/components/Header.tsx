@@ -1,12 +1,14 @@
 import { type FormEvent } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useAdmin } from "../context/AdminContext";
 import { CATEGORIES } from "../data/categories";
 
 // Header global: logo + barra de búsqueda + navegación + botón del carrito.
 // La búsqueda lleva a /products?search=... (el catálogo filtra por nombre).
 function Header() {
   const { totalItems, openCart } = useCart();
+  const { isAdmin, logout } = useAdmin();
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
 
@@ -77,6 +79,25 @@ function Header() {
               ))}
             </div>
           </div>
+
+          {/* Sesión de administrador activa: badge + cierre de sesión */}
+          {isAdmin && (
+            <>
+              <span
+                className="header__admin-badge"
+                title="Sesión de administrador activa"
+              >
+                🔧 Modo admin
+              </span>
+              <button
+                type="button"
+                className="header__link"
+                onClick={logout}
+              >
+                Cerrar sesión
+              </button>
+            </>
+          )}
 
           {/* Abre el panel lateral (drawer) del carrito, sin navegar de ruta. */}
           <button

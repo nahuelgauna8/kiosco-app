@@ -5,9 +5,27 @@
 //
 // Todos los errores (red caída, timeout, 4xx/5xx de la API) se lanzan como
 // ApiError con un mensaje apto para mostrarle al usuario en pantalla.
-import type { Order, OrderItemInput, Product } from "../types";
+import type {
+  AdminSession,
+  AdminStats,
+  Order,
+  OrderItemInput,
+  Product,
+  ProductInput,
+} from "../types";
+import { loadAdminSession } from "./adminSession";
 
 const API_BASE = "http://localhost:8000/api";
+// Origen del backend (sin /api): sirve para resolver rutas de imágenes
+// guardadas como "/uploads/products/x.png".
+const API_ORIGIN = API_BASE.replace(/\/api$/, "");
+
+// Resuelve la imagen de un producto: las rutas relativas ("/uploads/...")
+// se apuntan al backend; las URLs externas y los emojis quedan igual.
+export function resolveImageUrl(image?: string | null): string | undefined {
+  if (!image) return undefined;
+  return image.startsWith("/") ? `${API_ORIGIN}${image}` : image;
+}
 
 // Error de la API: lleva el mensaje visible y el código HTTP (0 = error de red).
 export class ApiError extends Error {
@@ -54,10 +72,17 @@ function extractDetail(data: unknown): string | null {
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   let response: Response;
 
+  // FormData: el navegador pone el Content-Type con su boundary, no lo
+  // pisamos con "application/json".
+  const isFormData = options.body instanceof FormData;
+
   try {
     response = await fetch(`${API_BASE}${path}`, {
-      headers: { "Content-Type": "application/json" },
       ...options,
+      headers: {
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
+        ...options.headers,
+      },
       // Si el backend no responde en 8 segundos, se corta (timeout visible).
       signal: options.signal ?? AbortSignal.timeout(8000),
     });
@@ -130,4 +155,93 @@ export async function deleteOrders(): Promise<number> {
     method: "DELETE",
   });
   return result.deleted;
+}
+
+// ===== Endpoints de administración =====
+
+// Fetch con el token de admin en el header Authorization.
+// Si no hay sesión (o el backend responde 401), lanza ApiError 401:
+// las páginas admin reaccionan cerrando la sesión y mostrando el login.
+async function adminRequest<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const token = loadAdminSession();
+  if (!token) {
+    throw new ApiError(
+      "Tu sesión de administrador expiró. Ingresá nuevamente.",
+      401,
+    );
+  }
+
+  return request<T>(path, {
+    ...options,
+    headers: { ...options.headers, Authorization: `Bearer ${token}` },
+  });
+}
+
+// POST /api/admin/login (clave incorrecta -> ApiError 401)
+export async function adminLogin(password: string): Promise<AdminSession> {
+  return request<AdminSession>("/admin/login", {
+    method: "POST",
+    body: JSON.stringify({ password }),
+  });
+}
+
+// GET /api/admin/me: verifica contra el backend que la sesión siga válida
+export async function adminValidateSession(): Promise<void> {
+  await adminRequest("/admin/me");
+}
+
+// GET /api/admin/stats (dashboard: pedidos del día, ingresos, stock bajo)
+export async function adminGetStats(): Promise<AdminStats> {
+  return adminRequest<AdminStats>("/admin/stats");
+}
+
+// POST /api/admin/products (alta de producto)
+export async function adminCreateProduct(data: ProductInput): Promise<Product> {
+  return adminRequest<Product>("/admin/products", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+// PUT /api/admin/products/{id} (edición parcial: solo los campos enviados)
+export async function adminUpdateProduct(
+  id: number,
+  data: Partial<ProductInput>,
+): Promise<Product> {
+  return adminRequest<Product>(`/admin/products/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+}
+
+// POST /api/admin/products/{id}/stock (suma unidades al stock actual)
+export async function adminRestockProduct(
+  id: number,
+  quantity: number,
+): Promise<Product> {
+  return adminRequest<Product>(`/admin/products/${id}/stock`, {
+    method: "POST",
+    body: JSON.stringify({ quantity }),
+  });
+}
+
+// DELETE /api/admin/products/{id} (devuelve el id borrado)
+export async function adminDeleteProduct(id: number): Promise<number> {
+  const result = await adminRequest<{ deleted: number }>(`/admin/products/${id}`, {
+    method: "DELETE",
+  });
+  return result.deleted;
+}
+
+// POST /api/admin/products/{id}/image (multipart: un archivo, máx. 5 MB)
+export async function adminUploadProductImage(
+  id: number,
+  file: File,
+): Promise<Product> {
+  const form = new FormData();
+  form.append("file", file);
+  return adminRequest<Product>(`/admin/products/${id}/image`, {
+    method: "POST",
+    body: form,
+  });
 }

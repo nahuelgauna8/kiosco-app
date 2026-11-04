@@ -313,6 +313,20 @@
   margin: 0;
 }
 
+/* Link discreto al panel de administración ("⚙️ Ajustes") */
+.footer__admin-link {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  text-decoration: none;
+}
+
+.footer__admin-link:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
 /* ===== Páginas (genérico) ===== */
 
 .page {
@@ -1234,6 +1248,102 @@
   .confirm {
     animation: none;
   }
+}
+
+/* ===== Panel de administración (/admin) ===== */
+
+/* Badge "🔧 Modo admin" en el header mientras dure la sesión */
+.header__admin-badge {
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Pantalla de ingreso de administrador */
+.admin-login {
+  max-width: 440px;
+  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-login h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.admin-login__hint {
+  margin: 0;
+  color: var(--color-text-light);
+}
+
+.admin-login__form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-login__form .button {
+  width: 100%;
+}
+
+/* Campos de formulario compartidos (login, alta y edición de productos) */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.form-field label {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+  border-color: var(--color-primary);
+}
+
+.form-field__hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+}
+
+/* Mensaje de error de formularios */
+.form-error {
+  margin: 0;
+  background: #fff5f5;
+  color: var(--color-danger);
+  border: 1px solid #ffc9c9;
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  font-weight: 600;
+  font-size: 0.92rem;
 }
 
 /* ===== Responsive ===== */

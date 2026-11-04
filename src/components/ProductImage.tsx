@@ -1,4 +1,5 @@
 import type { Product } from "../types";
+import { resolveImageUrl } from "../services/api";
 
 interface ProductImageProps {
   product: Pick<Product, "name" | "image" | "category">;
@@ -7,12 +8,11 @@ interface ProductImageProps {
 
 // Muestra la imagen real del producto si existe; si no, un emoji de respaldo.
 //
-// Preparado para la carga futura de imágenes reales:
-// - Si image es una ruta/URL (contiene "/" o ".", ej: "/images/coca.png"),
-//   se renderiza como <img>.
-// - Si es un emoji (ej: "🥤") o está vacío, se muestra el emoji / cajita 📦.
+// Las rutas guardadas en la base ("/uploads/products/x.png") se resuelven
+// contra la URL del backend con resolveImageUrl; las URLs externas y los
+// emojis (ej: "🥤") quedan tal cual.
 function ProductImage({ product, className }: ProductImageProps) {
-  const image = product.image;
+  const image = resolveImageUrl(product.image);
 
   if (image && (image.includes("/") || image.includes("."))) {
     return (
