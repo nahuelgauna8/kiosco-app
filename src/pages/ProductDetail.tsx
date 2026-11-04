@@ -1,33 +1,36 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, LoaderCircle, ShoppingCart, TriangleAlert } from "lucide-react";
+import {
+  ArrowLeft,
+  CheckCircle,
+  LoaderCircle,
+  Package,
+  ShoppingCart,
+  TriangleAlert,
+} from "lucide-react";
 import type { Product } from "../types";
-import { ApiError, getProductById } from "../services/api";
+import { ApiError, getProductById, resolveImageUrl } from "../services/api";
 import { useCart } from "../context/CartContext";
 import { CATEGORIES } from "../data/categories";
-import ProductImage from "../components/ProductImage";
 
 // Página de detalle de producto.
 // El id viene de la URL (path param): /products/:id
 // El producto se carga desde el backend (GET /api/products/{id}).
+//
+// Diseño e-commerce profesional:
+// - Desktop (>=900px): grid de 2 columnas (galería izquierda | información derecha).
+// - Móvil: 1 columna apilada.
 function ProductDetail() {
-  // useParams devuelve los path params como strings (id es string, hay que convertirlo).
   const { id } = useParams();
-
   const { addToCart } = useCart();
 
-  // Cantidad elegida por el usuario (por defecto 1).
   const [quantity, setQuantity] = useState(1);
-
-  // Estados de la petición a la API.
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
 
-  // Al cambiar de producto (o reintentar) volvemos al estado de carga.
-  // Se hace durante el render (patrón recomendado por React), no en el effect.
   const requestKey = `${id}#${retryKey}`;
   const [prevRequestKey, setPrevRequestKey] = useState(requestKey);
 
@@ -37,7 +40,7 @@ function ProductDetail() {
     setError(null);
     setNotFound(false);
     setProduct(null);
-    setQuantity(1); // Reseteamos la cantidad al cambiar de producto.
+    setQuantity(1);
   }
 
   useEffect(() => {
@@ -51,7 +54,6 @@ function ProductDetail() {
         if (cancelled) return;
 
         if (err instanceof ApiError && err.status === 404) {
-          // El producto no existe en la base de datos.
           setNotFound(true);
         } else {
           setError(
@@ -70,23 +72,17 @@ function ProductDetail() {
     };
   }, [id, retryKey]);
 
-  // Estado de carga: visible mientras espera la API.
   if (loading) {
     return (
       <section className="page">
         <p className="status-message status-message--loading" role="status">
-          <LoaderCircle
-            className="status-message__spinner"
-            size={18}
-            aria-hidden="true"
-          />
+          <LoaderCircle className="status-message__spinner" size={18} aria-hidden="true" />
           Cargando producto...
         </p>
       </section>
     );
   }
 
-  // Estado de error: visible si falla la red o la API responde mal.
   if (error) {
     return (
       <section className="page">
@@ -109,7 +105,6 @@ function ProductDetail() {
     );
   }
 
-  // Producto inexistente (404 de la API).
   if (notFound || !product) {
     return (
       <section className="page">
@@ -124,70 +119,143 @@ function ProductDetail() {
   }
 
   const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // parseInt con 1 como respaldo si el input queda vacío.
     const newQuantity = parseInt(event.target.value, 10);
     setQuantity(isNaN(newQuantity) ? 1 : newQuantity);
   };
 
   const handleAddToCart = () => {
-    // No permitimos cantidades menores a 1.
     addToCart(product, Math.max(1, quantity));
   };
 
-  // Chip de categoría con icono Lucide (igual que en el catálogo).
   const categoryInfo = CATEGORIES.find(
     (category) => category.id === product.category,
   );
 
+  // Galería simulada: como el modelo tiene una sola imagen, repetimos la
+  // misma en las miniaturas para mantener la estructura de galería.
+  const mainImageUrl = resolveImageUrl(product.image);
+  const hasImage = Boolean(mainImageUrl);
+
+  // Características: dividimos la descripción en oraciones para mostrarla
+  // como lista de viñetas en lugar de un texto corrido.
+  const features = product.description
+    ? product.description
+        .split(". ")
+        .filter((f) => f.trim().length > 0)
+        .map((f) => (f.endsWith(".") ? f : f + "."))
+    : [];
+
   return (
     <section className="page product-detail">
-      <ProductImage product={product} className="product-detail__image" />
+      <div className="product-detail__grid">
+        {/* ===== Columna izquierda: Galería de imágenes ===== */}
+        <div className="product-detail__gallery">
+          <div className="product-detail__thumbnails">
+            {hasImage ? (
+              <>
+                <img
+                  src={mainImageUrl}
+                  alt={`Miniatura de ${product.name}`}
+                  className="product-detail__thumbnail product-detail__thumbnail--active"
+                />
+                <img
+                  src={mainImageUrl}
+                  alt={`Miniatura de ${product.name}`}
+                  className="product-detail__thumbnail"
+                />
+              </>
+            ) : (
+              <div className="product-detail__thumbnail product-detail__thumbnail--empty product-detail__thumbnail--active">
+                <span aria-hidden="true">📦</span>
+              </div>
+            )}
+          </div>
 
-      <h1>{product.name}</h1>
+          <div className="product-detail__main-image">
+            {hasImage ? (
+              <img
+                src={mainImageUrl}
+                alt={product.name}
+                className="product-detail__main-img"
+              />
+            ) : (
+              <div className="product-detail__main-placeholder">
+                <Package size="4rem" strokeWidth={1.5} />
+              </div>
+            )}
+          </div>
+        </div>
 
-      <span className="product-card__category">
-        {categoryInfo && (
-          <categoryInfo.icon size={13} strokeWidth={2.5} aria-hidden="true" />
-        )}
-        {categoryInfo ? categoryInfo.label : product.category}
-      </span>
+        {/* ===== Columna derecha: Información del producto ===== */}
+        <div className="product-detail__info">
+          <span className="product-detail__category-badge">
+            {categoryInfo && (
+              <categoryInfo.icon size={13} strokeWidth={2.5} aria-hidden="true" />
+            )}
+            {categoryInfo ? categoryInfo.label : product.category}
+          </span>
 
-      <p className="product-detail__price">
-        ${product.price.toLocaleString("es-AR")}
-      </p>
+          <h1 className="product-detail__title">{product.name}</h1>
 
-      <p className="product-detail__stock">
-        {product.stock > 0 ? `Stock disponible: ${product.stock}` : "Sin stock"}
-      </p>
+          <p className="product-detail__price">
+            ${product.price.toLocaleString("es-AR")}
+          </p>
 
-      <p className="product-detail__description">{product.description}</p>
+          <p className={`
+            product-detail__stock
+            ${product.stock === 0 ? "product-detail__stock--out" : ""}
+          `}>
+            {product.stock > 0
+              ? `Stock disponible: ${product.stock} unidad(es)`
+              : "Sin stock"}
+          </p>
 
-      <div className="product-detail__actions">
-        <label htmlFor="quantity">Cantidad:</label>
-        <input
-          id="quantity"
-          type="number"
-          min={1}
-          max={product.stock}
-          value={quantity}
-          onChange={handleQuantityChange}
-          disabled={product.stock === 0}
-        />
-        <button
-          type="button"
-          className="button button--primary"
-          onClick={handleAddToCart}
-          disabled={product.stock === 0}
-        >
-          <ShoppingCart size={16} aria-hidden="true" />
-          Agregar al carrito
-        </button>
+          {features.length > 0 ? (
+            <ul className="product-detail__features">
+              {features.map((feature, index) => (
+                <li key={index} className="product-detail__feature">
+                  <CheckCircle size={14} strokeWidth={2} aria-hidden="true" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="product-detail__description">{product.description}</p>
+          )}
+
+          <div className="product-detail__actions">
+            <div className="product-detail__actions-row">
+              <label htmlFor="quantity" className="product-detail__quantity-label">
+                Cantidad
+              </label>
+              <input
+                id="quantity"
+                type="number"
+                min={1}
+                max={product.stock}
+                value={quantity}
+                onChange={handleQuantityChange}
+                disabled={product.stock === 0}
+                className="product-detail__quantity-input"
+              />
+            </div>
+            <button
+              type="button"
+              className="button button--primary product-detail__add-to-cart"
+              onClick={handleAddToCart}
+              disabled={product.stock === 0}
+            >
+              <ShoppingCart size={16} aria-hidden="true" />
+              {product.stock === 0 ? "Sin stock" : "Agregar al carrito"}
+            </button>
+          </div>
+
+          <Link to="/products" className="button button--secondary product-detail__back">
+            <ArrowLeft size={16} aria-hidden="true" />
+            Volver al catálogo
+          </Link>
+        </div>
       </div>
-
-      <Link to="/products" className="button button--secondary">
-        <ArrowLeft size={16} aria-hidden="true" />
-        Volver al catálogo
-      </Link>
     </section>
   );
 }
