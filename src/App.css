@@ -40,6 +40,9 @@
 }
 
 .header__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 1.25rem;
   font-weight: 700;
   text-decoration: none;
@@ -109,6 +112,9 @@
 }
 
 .header__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   padding: 8px 14px;
   border-radius: var(--radius);
   text-decoration: none;
@@ -167,7 +173,9 @@
 }
 
 .header__dropdown-item {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 9px 12px;
   border-radius: 6px;
   text-decoration: none;
@@ -213,6 +221,9 @@
 }
 
 .category-bar__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   padding: 13px 32px;
   color: #fff;
   text-decoration: none;
@@ -313,9 +324,11 @@
   margin: 0;
 }
 
-/* Link discreto al panel de administración ("⚙️ Ajustes") */
+/* Link discreto al panel de administración ("Ajustes") */
 .footer__admin-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   margin-top: 6px;
   font-size: 0.85rem;
   color: var(--color-text-light);
@@ -347,7 +360,10 @@
 /* ===== Botones ===== */
 
 .button {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   padding: 10px 20px;
   border: none;
   border-radius: var(--radius);
@@ -1359,8 +1375,11 @@
 
 /* ===== Panel de administración (/admin) ===== */
 
-/* Badge "🔧 Modo admin" en el header mientras dure la sesión */
+/* Badge "Modo admin" en el header mientras dure la sesión */
 .header__admin-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   background: var(--color-primary);
   color: #fff;
   border-radius: 999px;

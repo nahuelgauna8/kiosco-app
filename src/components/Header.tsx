@@ -1,5 +1,16 @@
 import { type FormEvent } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import {
+  ChevronDown,
+  House,
+  LogOut,
+  Package,
+  Receipt,
+  Search,
+  ShoppingCart,
+  Store,
+  Wrench,
+} from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAdmin } from "../context/AdminContext";
 import { CATEGORIES } from "../data/categories";
@@ -32,7 +43,8 @@ function Header() {
     <header className="header">
       <div className="header__inner">
         <Link to="/" className="header__logo">
-          🏪 Kiosco El Rápido
+          <Store size={22} strokeWidth={2.25} aria-hidden="true" />
+          Kiosco El Rápido
         </Link>
 
         <form className="header__search" onSubmit={handleSearch} role="search">
@@ -45,18 +57,21 @@ function Header() {
             aria-label="Buscar productos"
           />
           <button type="submit" aria-label="Buscar">
-            🔍
+            <Search size={18} aria-hidden="true" />
           </button>
         </form>
 
         <nav className="header__nav" aria-label="Navegación principal">
           <NavLink to="/" end className="header__link">
+            <House size={17} aria-hidden="true" />
             Inicio
           </NavLink>
           <NavLink to="/products" className="header__link">
+            <Package size={17} aria-hidden="true" />
             Productos
           </NavLink>
           <NavLink to="/orders" className="header__link">
+            <Receipt size={17} aria-hidden="true" />
             Mis pedidos
           </NavLink>
 
@@ -65,7 +80,7 @@ function Header() {
               type="button"
               className="header__link header__dropdown-toggle"
             >
-              Categorías <span aria-hidden="true">▾</span>
+              Categorías <ChevronDown size={15} aria-hidden="true" />
             </button>
             <div className="header__dropdown-menu">
               {CATEGORIES.map((category) => (
@@ -74,7 +89,8 @@ function Header() {
                   to={`/products?category=${category.id}`}
                   className="header__dropdown-item"
                 >
-                  <span aria-hidden="true">{category.emoji}</span> {category.label}
+                  <category.icon size={16} aria-hidden="true" />
+                  {category.label}
                 </Link>
               ))}
             </div>
@@ -87,13 +103,15 @@ function Header() {
                 className="header__admin-badge"
                 title="Sesión de administrador activa"
               >
-                🔧 Modo admin
+                <Wrench size={14} aria-hidden="true" />
+                Modo admin
               </span>
               <button
                 type="button"
                 className="header__link"
                 onClick={logout}
               >
+                <LogOut size={16} aria-hidden="true" />
                 Cerrar sesión
               </button>
             </>
@@ -106,6 +124,7 @@ function Header() {
             onClick={openCart}
             aria-label="Abrir el carrito"
           >
+            <ShoppingCart size={18} aria-hidden="true" />
             Carrito <span className="header__cart-count">({totalItems})</span>
           </button>
         </nav>

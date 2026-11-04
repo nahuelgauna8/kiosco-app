@@ -36,7 +36,7 @@ function ProductFormFields({ product, idPrefix }: ProductFormFieldsProps) {
         >
           {CATEGORIES.map((category) => (
             <option key={category.id} value={category.id}>
-              {category.emoji} {category.label}
+              {category.label}
             </option>
           ))}
         </select>

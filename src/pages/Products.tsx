@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { ShoppingCart } from "lucide-react";
 import ProductCard from "../components/ProductCard";
 import ConfirmDialog from "../components/ConfirmDialog";
 import ProductEditDialog from "../components/admin/ProductEditDialog";
@@ -199,7 +200,7 @@ function Products() {
               }`}
               onClick={() => selectCategory("todas")}
             >
-              <span aria-hidden="true">🛒</span> Todas
+              <ShoppingCart size={17} aria-hidden="true" /> Todas
             </button>
           </li>
           {CATEGORIES.map((category) => (
@@ -211,7 +212,8 @@ function Products() {
                 }`}
                 onClick={() => selectCategory(category.id)}
               >
-                <span aria-hidden="true">{category.emoji}</span> {category.label}
+                <category.icon size={17} aria-hidden="true" />
+                {category.label}
               </button>
             </li>
           ))}
