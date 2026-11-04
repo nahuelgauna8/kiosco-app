@@ -57,9 +57,11 @@
 .header__search {
   flex: 1;
   max-width: 480px;
-  /* Sin esto, min-width:auto = ancho mínimo del input (~235px) y la fila
-     del header no puede comprimirse en pantallas medianas. */
-  min-width: 0;
+  /* Ancho mínimo razonable: nunca se achica tanto que el placeholder se
+     corte improlijo (con "Modo admin" activo usa placeholder corto).
+     min-width: 0 permitiría comprimirse más, pero priorizamos la
+     legibilidad antes que el estrechamiento extremo. */
+  min-width: 180px;
   display: flex;
   align-items: center;
   gap: 0;

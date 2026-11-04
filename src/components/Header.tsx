@@ -51,7 +51,7 @@ function Header() {
             name="search"
             key={searchTerm}
             defaultValue={searchTerm}
-            placeholder="¿Qué estás buscando?"
+            placeholder={isAdmin ? "Buscar…" : "¿Qué estás buscando?"}
             aria-label="Buscar productos"
           />
           <button type="submit" aria-label="Buscar">
