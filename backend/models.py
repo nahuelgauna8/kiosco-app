@@ -17,6 +17,9 @@ class Product(Base):
     price: Mapped[float] = mapped_column(Float, nullable=False)
     stock: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     description: Mapped[str] = mapped_column(String, default="")
+    # Ruta de la imagen subida desde el panel (ej: "/uploads/products/x.png").
+    # None = sin imagen (el frontend muestra un 📦 de respaldo).
+    image: Mapped[str | None] = mapped_column(String, nullable=True, default=None)
 
 
 class Order(Base):

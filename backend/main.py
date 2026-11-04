@@ -6,6 +6,7 @@
 # Documentación interactiva: http://127.0.0.1:8000/docs
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import inspect as sqlalchemy_inspect
 
 from database import Base, SessionLocal, engine
 from routers import admin, orders, products
@@ -18,6 +19,24 @@ from seed import seed_products
 # Crea las tablas (products y orders) si no existen.
 # En producción conviene usar Alembic para migraciones.
 Base.metadata.create_all(bind=engine)
+
+
+# Migración ligera: agrega columnas que falten en tablas existentes.
+# create_all() NO agrega columnas a tablas que ya existen, así que si la
+# base nació sin la columna image, hay que agregarla con ALTER TABLE.
+def migrate_missing_columns() -> None:
+    inspector = sqlalchemy_inspect(engine)
+    if "products" not in inspector.get_table_names():
+        return
+
+    columns = {column["name"] for column in inspector.get_columns("products")}
+    if "image" not in columns:
+        with engine.begin() as connection:
+            connection.exec_driver_sql("ALTER TABLE products ADD COLUMN image VARCHAR")
+        print("Migración aplicada: products.image agregada.")
+
+
+migrate_missing_columns()
 
 # Siembra el catálogo solo la primera vez (si products está vacía).
 with SessionLocal() as db:

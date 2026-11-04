@@ -34,11 +34,24 @@ class ProductBase(BaseModel):
     price: float = Field(gt=0, description="El precio debe ser mayor a 0")
     stock: int = Field(ge=0, description="El stock no puede ser negativo")
     description: str = ""
+    # Ruta de imagen (ej: "/uploads/products/abc.png") o emoji. Opcional.
+    image: str | None = None
 
 
 class ProductCreate(ProductBase):
-    """Para crear un producto (si algún día se agrega ese endpoint)."""
+    """Para crear un producto desde el panel de administración."""
     pass
+
+
+class ProductUpdate(BaseModel):
+    """Campos editables por el admin. Todos opcionales: actualización parcial."""
+
+    name: str | None = Field(default=None, min_length=1)
+    category: Category | None = None
+    price: float | None = Field(default=None, gt=0)
+    stock: int | None = Field(default=None, ge=0)
+    description: str | None = None
+    image: str | None = None
 
 
 class ProductOut(ProductBase):
@@ -96,3 +109,38 @@ class OrdersDeleted(BaseModel):
     """Salida de DELETE /api/orders: cuántos pedidos se borraron."""
 
     deleted: int = Field(ge=0)
+
+
+# ===== Administración (stock, productos, dashboard) =====
+
+class AdminStockIn(BaseModel):
+    """Body de reponer stock: cuántas unidades se suman al stock actual."""
+
+    quantity: int = Field(gt=0, description="Se suman al menos 1 unidad")
+
+
+class AdminDeleted(BaseModel):
+    """Salida de DELETE /api/admin/products/{id}."""
+
+    deleted: int = Field(gt=0)
+
+
+class LowStockProduct(BaseModel):
+    """Producto con stock bajo (para las alertas del dashboard)."""
+
+    id: int
+    name: str
+    stock: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+class AdminStatsOut(BaseModel):
+    """Resumen del dashboard de administración."""
+
+    orders_today: int = Field(ge=0, description="Pedidos creados hoy")
+    revenue_today: float = Field(ge=0, description="Suma de los totales de hoy")
+    total_orders: int = Field(ge=0)
+    total_products: int = Field(ge=0)
+    low_stock: list[LowStockProduct] = Field(
+        description="Productos con menos de 5 unidades"
+    )
