@@ -3,12 +3,14 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   House,
   LogOut,
+  Moon,
   Package,
   Receipt,
   Search,
   ShoppingCart,
   Settings,
   Store,
+  Sun,
   Wrench,
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
@@ -16,7 +18,12 @@ import { useAdmin } from "../context/AdminContext";
 
 // Header global: logo + barra de búsqueda + navegación + botón del carrito.
 // La búsqueda lleva a /products?search=... (el catálogo filtra por nombre).
-function Header() {
+interface HeaderProps {
+  isDark: boolean;
+  toggleDark: () => void;
+}
+
+function Header({ isDark, toggleDark }: HeaderProps) {
   const { totalItems, openCart } = useCart();
   const { isAdmin, logout } = useAdmin();
   const navigate = useNavigate();
@@ -41,6 +48,21 @@ function Header() {
   return (
     <header className="header">
       <div className="header__inner">
+        {/* Interruptor de modo oscuro: a la izquierda del logo */}
+        <button
+          type="button"
+          className="header__theme-toggle"
+          onClick={toggleDark}
+          aria-label={isDark ? "Modo claro" : "Modo oscuro"}
+          title={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+        >
+          <span className="header__theme-track">
+            <span className="header__theme-thumb">
+              {isDark ? <Sun size={14} strokeWidth={2} /> : <Moon size={14} strokeWidth={2} />}
+            </span>
+          </span>
+        </button>
+
         <Link to="/" className="header__logo">
           <Store size={22} strokeWidth={2.25} aria-hidden="true" />
           Kiosco El Rápido
