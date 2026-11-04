@@ -1028,6 +1028,8 @@
   line-height: 1.25;
   color: var(--color-text);
   margin: 0;
+  /* Alinea con el inicio del texto de las características (después del check) */
+  padding-left: 28px;
 }
 
 .product-detail__price {
@@ -1035,6 +1037,7 @@
   font-weight: 700;
   color: var(--color-primary);
   margin: 6px 0 4px;
+  padding-left: 28px;
 }
 
 .product-detail__stock {
@@ -1042,6 +1045,7 @@
   font-weight: 600;
   color: var(--color-success);
   margin: 0 0 18px;
+  padding-left: 28px;
 }
 
 .product-detail__stock--out {
