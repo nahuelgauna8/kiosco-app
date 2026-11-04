@@ -169,6 +169,31 @@
   background: var(--color-primary-dark);
 }
 
+/* Icono de ajustes (engranaje) en el navbar.
+   Solo visible cuando no hay sesión de admin. Color naranja institucional
+   con hover a naranja oscuro, sin subrayado. */
+.header__settings-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.header__settings-link:hover {
+  color: var(--color-primary-dark);
+  background: var(--color-bg);
+}
+
 .header__cart-count {
   font-weight: 700;
 }

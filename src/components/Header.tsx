@@ -7,6 +7,7 @@ import {
   Receipt,
   Search,
   ShoppingCart,
+  Settings,
   Store,
   Wrench,
 } from "lucide-react";
@@ -105,6 +106,20 @@ function Header() {
             <ShoppingCart size={18} aria-hidden="true" />
             Carrito <span className="header__cart-count">({totalItems})</span>
           </button>
+
+          {/* Icono de ajustes: solo visible para clientes / sin sesión de admin.
+               Se oculta cuando el administrador está logueado (ya ve "Modo admin" y
+               "Cerrar sesión"). Redirige a la sección de configuración. */}
+          {!isAdmin && (
+            <Link
+              to="/admin/settings"
+              className="header__settings-link"
+              title="Ajustes"
+              aria-label="Ajustes"
+            >
+              <Settings size={17} aria-hidden="true" />
+            </Link>
+          )}
         </nav>
       </div>
     </header>
