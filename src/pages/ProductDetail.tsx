@@ -4,6 +4,7 @@ import { ArrowLeft, LoaderCircle, ShoppingCart, TriangleAlert } from "lucide-rea
 import type { Product } from "../types";
 import { ApiError, getProductById } from "../services/api";
 import { useCart } from "../context/CartContext";
+import { CATEGORIES } from "../data/categories";
 import ProductImage from "../components/ProductImage";
 
 // Página de detalle de producto.
@@ -133,13 +134,23 @@ function ProductDetail() {
     addToCart(product, Math.max(1, quantity));
   };
 
+  // Chip de categoría con icono Lucide (igual que en el catálogo).
+  const categoryInfo = CATEGORIES.find(
+    (category) => category.id === product.category,
+  );
+
   return (
     <section className="page product-detail">
       <ProductImage product={product} className="product-detail__image" />
 
       <h1>{product.name}</h1>
 
-      <span className="product-card__category">{product.category}</span>
+      <span className="product-card__category">
+        {categoryInfo && (
+          <categoryInfo.icon size={13} strokeWidth={2.5} aria-hidden="true" />
+        )}
+        {categoryInfo ? categoryInfo.label : product.category}
+      </span>
 
       <p className="product-detail__price">
         ${product.price.toLocaleString("es-AR")}

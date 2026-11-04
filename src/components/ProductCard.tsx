@@ -1,8 +1,15 @@
 import { Link } from "react-router-dom";
-import { PackagePlus, Pencil, ShoppingCart, Trash2, TriangleAlert } from "lucide-react";
+import {
+  PackagePlus,
+  Pencil,
+  ShoppingCart,
+  Trash2,
+  TriangleAlert,
+} from "lucide-react";
 import type { Product } from "../types";
 import { useCart } from "../context/CartContext";
 import { LOW_STOCK_THRESHOLD } from "../data/constants";
+import { CATEGORIES } from "../data/categories";
 import ProductImage from "./ProductImage";
 
 // Acciones de administración que la página del catálogo le pasa a la tarjeta.
@@ -18,9 +25,13 @@ interface ProductCardProps {
   adminActions?: ProductCardAdminActions;
 }
 
-// Tarjeta de un producto: link al detalle + botón "Agregar al carrito" (cantidad 1).
-// Con sesión de admin activa se agregan: alerta de stock bajo y botones de
-// editar / reponer / eliminar (edición rápida inline en el catálogo).
+// Tarjeta de un producto (rediseño estilo Uiverse):
+// - Imagen enmarcada con fondo cálido sutil + zoom suave al pasar el cursor.
+// - Chip de categoría con icono Lucide, nombre, precio destacado y stock con
+//   punto de estado (verde / ámbar si está bajo / rojo si está agotado).
+// - Elevación fluida: sombra suave que sube a shadow-xl + hover:-translate-y-1.5.
+// Con sesión de admin activa se agrega: alerta de stock bajo flotante y
+// botones de editar / reponer / eliminar (edición inline en el catálogo).
 function ProductCard({ product, adminActions }: ProductCardProps) {
   const { addToCart } = useCart();
 
@@ -28,41 +39,66 @@ function ProductCard({ product, adminActions }: ProductCardProps) {
   const isLowStock =
     product.stock > 0 && product.stock < LOW_STOCK_THRESHOLD;
 
+  // Chip de categoría: icono vectorial + etiqueta legible ("Bebidas", etc.).
+  const categoryInfo = CATEGORIES.find(
+    (category) => category.id === product.category,
+  );
+
+  // Estado visual del stock para el punto de color (ok / low / out).
+  const stockState = product.stock === 0 ? "out" : isLowStock ? "low" : "ok";
+
   return (
     <article className="product-card">
       <Link to={`/products/${product.id}`} className="product-card__link">
-        <ProductImage product={product} className="product-card__image" />
+        {/* Imagen enmarcada; el badge de stock bajo flota encima (modo admin) */}
+        <div className="product-card__media">
+          <ProductImage product={product} className="product-card__image" />
+
+          {adminActions && isLowStock && (
+            <span className="product-card__lowstock">
+              <TriangleAlert size={13} aria-hidden="true" />
+              Stock bajo
+            </span>
+          )}
+        </div>
+
+        <span className="product-card__category">
+          {categoryInfo && (
+            <categoryInfo.icon size={13} strokeWidth={2.5} aria-hidden="true" />
+          )}
+          {categoryInfo ? categoryInfo.label : product.category}
+        </span>
+
         <h2 className="product-card__name">{product.name}</h2>
+
+        <p className="product-card__price">
+          ${product.price.toLocaleString("es-AR")}
+        </p>
+
+        <p className={`product-card__stock product-card__stock--${stockState}`}>
+          <span className="product-card__stock-dot" aria-hidden="true" />
+          {product.stock > 0 ? `Stock: ${product.stock}` : "Sin stock"}
+        </p>
       </Link>
 
-      <span className="product-card__category">{product.category}</span>
-
-      <p className="product-card__price">${product.price.toLocaleString("es-AR")}</p>
-
-      <p className="product-card__stock">
-        {product.stock > 0 ? `Stock: ${product.stock}` : "Sin stock"}
-      </p>
-
-      {adminActions && isLowStock && (
-        <span className="product-card__lowstock">
-          <TriangleAlert size={14} aria-hidden="true" />
-          Stock bajo
-        </span>
-      )}
-
+      {/* Suma 1 unidad al carrito (misma lógica y evento de siempre) */}
       <button
         type="button"
-        className="button button--primary"
+        className="button button--primary product-card__cart"
         onClick={() => addToCart(product, 1)}
         disabled={product.stock === 0}
       >
-        <ShoppingCart size={16} aria-hidden="true" />
+        <ShoppingCart size={17} aria-hidden="true" />
         Agregar al carrito
       </button>
 
       {/* Acciones rápidas de administración (solo con sesión activa) */}
       {adminActions && (
-        <div className="product-card__admin" role="group" aria-label="Acciones de administración">
+        <div
+          className="product-card__admin"
+          role="group"
+          aria-label="Acciones de administración"
+        >
           <button
             type="button"
             className="product-card__admin-btn"
