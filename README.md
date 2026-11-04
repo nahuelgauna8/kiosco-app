@@ -62,20 +62,23 @@ python -m venv .venv
 
 ```
 src/
-├── components/   # Header, Footer, Layout, ProductCard, CartItem
-├── context/      # CartContext (carrito con useContext + useState)
-├── pages/        # Home, Products, ProductDetail, Cart, NotFound
-├── services/     # api.ts: getProducts, getProductById, createOrder (fetch al backend)
-├── types/        # Interfaces compartidas (Product, CartItem, Order, ...)
-├── App.tsx       # Rutas de la aplicación
-└── main.tsx      # Punto de entrada
+├── components/       # Header, Footer, Layout, ProductCard, CartItem, Modal, ConfirmDialog
+│   └── admin/        # AdminLogin, AdminPanel, DashboardStats, formularios y diálogos
+├── context/          # CartContext (carrito) y AdminContext (sesión de administrador)
+├── pages/            # Home, Products, ProductDetail, Cart, Orders, Admin, NotFound
+├── services/         # api.ts (fetch al backend) y adminSession.ts (token en localStorage)
+├── types/            # Interfaces compartidas (Product, CartItem, Order, AdminStats, ...)
+├── App.tsx           # Rutas de la aplicación
+└── main.tsx          # Punto de entrada
 
 backend/
-├── main.py           # App FastAPI + CORS + creación de tablas
+├── main.py           # App FastAPI + CORS + migración ligera + carpeta uploads/
+├── config.py         # Config sensible (contraseña admin, secreto del token) desde .env
+├── auth.py           # Token HMAC de administrador + dependencia require_admin
 ├── database.py       # Conexión SQLite + SQLAlchemy (Base, get_db)
 ├── models.py         # Modelos Product y Order (tablas)
 ├── schemas.py        # Esquemas Pydantic (validación de entrada/salida)
-├── routers/          # products.py y orders.py (endpoints)
+├── routers/          # products.py, orders.py y admin.py (endpoints)
 ├── requirements.txt  # Dependencias del backend
 └── .venv/            # Entorno virtual (ignorado por git)
 ```
@@ -108,8 +111,19 @@ Esta Parte 1 avanza tarea por tarea, con un commit por tarea:
 - [x] **M.3** – Borrar historial: endpoint DELETE /api/orders + botón con confirmación
 - [x] **M.4** – Modal de confirmación propio (ConfirmDialog), acorde a la interfaz, en lugar de window.confirm
 
+### 🔧 Panel de administrador (fase 4)
+
+- [x] **A.1** – Backend: autenticación de administrador (login por clave, token HMAC con expiración, endpoints protegidos)
+- [x] **A.2** – Backend: CRUD admin de productos + reponer stock + dashboard + migración de la columna `image`
+- [x] **A.3** – Backend: subida de imágenes (multipart, validación, carpeta `uploads/` servida por FastAPI)
+- [x] **A.4** – Frontend: sesión de admin (Context + token en localStorage), ruta `/admin` con login, link "⚙️ Ajustes" en el footer y badge "🔧 Modo admin" en el header
+- [x] **A.5** – Frontend: panel `/admin` con dashboard (pedidos del día, ingresos, productos por agotarse) y alta de productos con imagen (URL o archivo)
+- [x] **A.6** – Frontend: edición inline en el catálogo (editar / reponer / eliminar) con alerta de stock bajo
+
+**Acceso al panel:** link "⚙️ Ajustes" en el footer o URL directa `/admin`.
+Clave por defecto: `kiosco2026` (se cambia en `backend/.env`, archivo ignorado por git).
+
 > Las imágenes reales de productos y el banner se agregarán al final del proyecto
 > (`public/images/`); el componente `ProductImage` ya las renderiza automáticamente.
 
-> 📌 **Próxima fase (pendiente):** panel de administrador — decisiones de diseño
-> guardadas en [PLAN-ADMIN.md](PLAN-ADMIN.md). No se implementa hasta dar luz verde.
+> 📌 **Detalles y decisiones de diseño** del panel en [PLAN-ADMIN.md](PLAN-ADMIN.md).
