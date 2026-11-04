@@ -1,7 +1,6 @@
 import { type FormEvent } from "react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
-  ChevronDown,
   House,
   LogOut,
   Package,
@@ -13,7 +12,6 @@ import {
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAdmin } from "../context/AdminContext";
-import { CATEGORIES } from "../data/categories";
 
 // Header global: logo + barra de búsqueda + navegación + botón del carrito.
 // La búsqueda lleva a /products?search=... (el catálogo filtra por nombre).
@@ -74,27 +72,6 @@ function Header() {
             <Receipt size={17} aria-hidden="true" />
             Mis pedidos
           </NavLink>
-
-          <div className="header__dropdown">
-            <button
-              type="button"
-              className="header__link header__dropdown-toggle"
-            >
-              Categorías <ChevronDown size={15} aria-hidden="true" />
-            </button>
-            <div className="header__dropdown-menu">
-              {CATEGORIES.map((category) => (
-                <Link
-                  key={category.id}
-                  to={`/products?category=${category.id}`}
-                  className="header__dropdown-item"
-                >
-                  <category.icon size={16} aria-hidden="true" />
-                  {category.label}
-                </Link>
-              ))}
-            </div>
-          </div>
 
           {/* Sesión de administrador activa: badge + cierre de sesión */}
           {isAdmin && (
