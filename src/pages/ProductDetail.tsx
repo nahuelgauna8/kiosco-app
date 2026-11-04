@@ -136,14 +136,8 @@ function ProductDetail() {
   const mainImageUrl = resolveImageUrl(product.image);
   const hasImage = Boolean(mainImageUrl);
 
-  // Características: dividimos la descripción en oraciones para mostrarla
-  // como lista de viñetas en lugar de un texto corrido.
-  const features = product.description
-    ? product.description
-        .split(". ")
-        .filter((f) => f.trim().length > 0)
-        .map((f) => (f.endsWith(".") ? f : f + "."))
-    : [];
+  // Características: se muestran como lista de viñetas (una por entrada).
+  const features = product.description ?? [];
 
   return (
     <section className="page product-detail">

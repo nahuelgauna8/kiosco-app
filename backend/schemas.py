@@ -33,7 +33,7 @@ class ProductBase(BaseModel):
     category: Category
     price: float = Field(gt=0, description="El precio debe ser mayor a 0")
     stock: int = Field(ge=0, description="El stock no puede ser negativo")
-    description: str = ""
+    description: list[str] = Field(default_factory=list, description="Lista de características del producto")
     # Ruta de imagen (ej: "/uploads/products/abc.png") o emoji. Opcional.
     image: str | None = None
 
@@ -50,7 +50,7 @@ class ProductUpdate(BaseModel):
     category: Category | None = None
     price: float | None = Field(default=None, gt=0)
     stock: int | None = Field(default=None, ge=0)
-    description: str | None = None
+    description: list[str] | None = Field(default=None, description="Lista de características del producto")
     image: str | None = None
 
 

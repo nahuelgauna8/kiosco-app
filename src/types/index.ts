@@ -8,8 +8,8 @@ export interface Product {
   category: Category;
   price: number;
   stock: number;
-  description: string;
-  image?: string; // opcional: puede ser un emoji o una URL
+  description: string[];
+  image?: string; // opcional: puede ser una URL o ruta relativa. Opcional.
 }
 
 // Item del carrito: combina un producto con la cantidad elegida
@@ -56,7 +56,7 @@ export interface ProductInput {
   category: Category;
   price: number;
   stock: number;
-  description: string;
+  description: string[];
   image?: string;
 }
 

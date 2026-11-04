@@ -5,15 +5,21 @@ import type { Category, Product, ProductInput } from "../../types";
 
 // Lee FormData -> payload para POST/PUT /api/admin/products.
 // Si el campo de URL de imagen está vacío, no se envía (no se toca la actual).
+// Las características se leen como una lista (un input por fila).
 export function readProductForm(data: FormData): ProductInput {
   const imageUrl = String(data.get("image_url") ?? "").trim();
+
+  const descriptions = data
+    .getAll("description")
+    .map((value) => String(value).trim())
+    .filter((value) => value.length > 0);
 
   return {
     name: String(data.get("name") ?? "").trim(),
     category: String(data.get("category") ?? "varios") as Category,
     price: Number(data.get("price")),
     stock: Number(data.get("stock")),
-    description: String(data.get("description") ?? "").trim(),
+    description: descriptions,
     ...(imageUrl ? { image: imageUrl } : {}),
   };
 }

@@ -1,17 +1,37 @@
+import { useState } from "react";
 import type { Product } from "../../types";
 import { CATEGORIES } from "../../data/categories";
+import { Minus, Plus } from "lucide-react";
 
 interface ProductFormFieldsProps {
-  // Valores por defecto (edición). Sin producto = formulario de alta vacío.
   product?: Product;
-  // Prefijo único para los ids de los inputs (evita duplicados si hay dos formularios).
   idPrefix: string;
 }
 
 // Campos compartidos de los formularios de productos (alta en /admin y
 // edición inline en el catálogo). Formulario no controlado: los valores
 // se leen con FormData al enviar (ver productForm.ts).
+// Las características se manejan como una lista dinámica de inputs
+// (agregar / quitar filas) en vez de un texto descriptivo libre.
 function ProductFormFields({ product, idPrefix }: ProductFormFieldsProps) {
+  const [features, setFeatures] = useState<string[]>(
+    product?.description ?? [],
+  );
+
+  const addFeature = () => setFeatures([...features, ""]);
+
+  const removeFeature = (index: number) => {
+    const next = [...features];
+    next.splice(index, 1);
+    setFeatures(next);
+  };
+
+  const updateFeature = (index: number, value: string) => {
+    const next = [...features];
+    next[index] = value;
+    setFeatures(next);
+  };
+
   return (
     <>
       <div className="form-field">
@@ -71,15 +91,40 @@ function ProductFormFields({ product, idPrefix }: ProductFormFieldsProps) {
       </div>
 
       <div className="form-field">
-        <label htmlFor={`${idPrefix}-description`}>Descripción</label>
-        <textarea
-          id={`${idPrefix}-description`}
-          name="description"
-          rows={2}
-          maxLength={200}
-          defaultValue={product?.description ?? ""}
-          placeholder="Opcional"
-        />
+        <label htmlFor={`${idPrefix}-features`}>Características</label>
+        <div className="features-list">
+          {features.map((feature, index) => (
+            <div key={index} className="feature-row">
+              <input
+                id={`${idPrefix}-feature-${index}`}
+                name="description"
+                type="text"
+                value={feature}
+                onChange={(event) => updateFeature(index, event.target.value)}
+                placeholder="Ej: Sin azúcar"
+              />
+              <button
+                type="button"
+                className="button button--secondary feature-remove"
+                onClick={() => removeFeature(index)}
+                aria-label="Quitar característica"
+              >
+                <Minus size={16} aria-hidden="true" />
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            className="button button--secondary feature-add"
+            onClick={addFeature}
+          >
+            <Plus size={16} aria-hidden="true" />
+            Agregar característica
+          </button>
+          <p className="form-field__hint">
+            Una característica por fila. Se guardan como lista del producto.
+          </p>
+        </div>
       </div>
 
       <div className="form-field">

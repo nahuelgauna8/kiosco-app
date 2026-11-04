@@ -2,6 +2,7 @@
 #
 # Todas las rutas (salvo /login) exigen un token válido:
 #   Authorization: Bearer <token>
+import json
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -82,7 +83,12 @@ def me():
 )
 def create_product(data: ProductCreate, db: Session = Depends(get_db)):
     """Da de alta un producto nuevo en el catálogo."""
-    product = Product(**data.model_dump())
+    data_dict = data.model_dump()
+    # description llega como lista de características; se guarda como JSON
+    # en la columna description (VARCHAR) de SQLite.
+    if isinstance(data_dict.get("description"), list):
+        data_dict["description"] = json.dumps(data_dict["description"])
+    product = Product(**data_dict)
     db.add(product)
     db.commit()
     db.refresh(product)
@@ -103,6 +109,10 @@ def update_product(
     product = _get_product_or_404(product_id, db)
 
     for field, value in data.model_dump(exclude_unset=True).items():
+        # description llega como lista de características; se guarda como JSON
+        # en la columna description (VARCHAR) de SQLite.
+        if field == "description" and isinstance(value, list):
+            value = json.dumps(value)
         setattr(product, field, value)
 
     db.commit()

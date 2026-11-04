@@ -1,4 +1,5 @@
 # Endpoints de productos: GET /api/products y GET /api/products/{id}
+import json
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -8,6 +9,18 @@ from models import Product
 from schemas import Category, ProductOut
 
 router = APIRouter(prefix="/api/products", tags=["products"])
+
+
+def _parse_description(value: str | None) -> list[str]:
+    """Convierte la columna description (JSON string) en lista de Python.
+    Productos viejos con texto plano se tratan como una característica."""
+    if not value:
+        return []
+    try:
+        parsed = json.loads(value)
+        return parsed if isinstance(parsed, list) else [str(parsed)]
+    except (json.JSONDecodeError, TypeError):
+        return [value] if value.strip() else []
 
 
 @router.get("", response_model=list[ProductOut])
@@ -23,7 +36,10 @@ def get_products(
     if category is not None:
         statement = statement.where(Product.category == category)
 
-    return db.scalars(statement.order_by(Product.id)).all()
+    products = db.scalars(statement.order_by(Product.id)).all()
+    for product in products:
+        product.description = _parse_description(product.description)
+    return products
 
 
 @router.get("/{product_id}", response_model=ProductOut)
@@ -37,4 +53,5 @@ def get_product(product_id: int, db: Session = Depends(get_db)):
             detail=f"El producto con id {product_id} no existe",
         )
 
+    product.description = _parse_description(product.description)
     return product
