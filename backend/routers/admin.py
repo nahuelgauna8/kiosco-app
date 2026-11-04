@@ -87,11 +87,17 @@ def create_product(data: ProductCreate, db: Session = Depends(get_db)):
     # description llega como lista de características; se guarda como JSON
     # en la columna description (VARCHAR) de SQLite.
     if isinstance(data_dict.get("description"), list):
+        description_list = data_dict["description"]
         data_dict["description"] = json.dumps(data_dict["description"])
     product = Product(**data_dict)
     db.add(product)
     db.commit()
     db.refresh(product)
+
+    # Restaurar la lista original para la respuesta de la API.
+    if 'description_list' in locals():
+        product.description = description_list
+
     return product
 
 
@@ -112,11 +118,18 @@ def update_product(
         # description llega como lista de características; se guarda como JSON
         # en la columna description (VARCHAR) de SQLite.
         if field == "description" and isinstance(value, list):
+            description_list = value
             value = json.dumps(value)
         setattr(product, field, value)
 
     db.commit()
     db.refresh(product)
+
+    # Restaurar la lista original para la respuesta de la API (ProductOut
+    # espera list[str], no el JSON string de la BD).
+    if 'description_list' in locals():
+        product.description = description_list
+
     return product
 
 
