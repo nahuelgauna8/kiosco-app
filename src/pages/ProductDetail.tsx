@@ -142,29 +142,8 @@ function ProductDetail() {
   return (
     <section className="page product-detail">
       <div className="product-detail__grid">
-        {/* ===== Columna izquierda: Galería de imágenes ===== */}
+        {/* ===== Columna izquierda: Imagen principal ===== */}
         <div className="product-detail__gallery">
-          <div className="product-detail__thumbnails">
-            {hasImage ? (
-              <>
-                <img
-                  src={mainImageUrl}
-                  alt={`Miniatura de ${product.name}`}
-                  className="product-detail__thumbnail product-detail__thumbnail--active"
-                />
-                <img
-                  src={mainImageUrl}
-                  alt={`Miniatura de ${product.name}`}
-                  className="product-detail__thumbnail"
-                />
-              </>
-            ) : (
-              <div className="product-detail__thumbnail product-detail__thumbnail--empty product-detail__thumbnail--active">
-                <span aria-hidden="true">📦</span>
-              </div>
-            )}
-          </div>
-
           <div className="product-detail__main-image">
             {hasImage ? (
               <img
