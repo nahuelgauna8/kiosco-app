@@ -1,9 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
+import ConfirmDialog from "../components/ConfirmDialog";
+import ProductEditDialog from "../components/admin/ProductEditDialog";
+import RestockDialog from "../components/admin/RestockDialog";
 import { CATEGORIES } from "../data/categories";
 import type { Product } from "../types";
-import { ApiError, getProducts } from "../services/api";
+import { ApiError, adminDeleteProduct, getProducts } from "../services/api";
+import { useAdmin } from "../context/AdminContext";
 
 // Opciones de ordenamiento de la barra superior.
 const sortOptions = [
@@ -37,6 +41,16 @@ function Products() {
 
   // Ordenamiento elegido en la barra superior (estado local).
   const [sort, setSort] = useState<SortOption>("destacados");
+
+  // Modo administrador: con sesión activa se desbloquean las acciones
+  // inline de las tarjetas (editar / reponer / eliminar).
+  const { isAdmin } = useAdmin();
+  const [editing, setEditing] = useState<Product | null>(null);
+  const [restocking, setRestocking] = useState<Product | null>(null);
+  const [deleting, setDeleting] = useState<Product | null>(null);
+  const [deletingBusy, setDeletingBusy] = useState(false);
+  const [adminNotice, setAdminNotice] = useState<string | null>(null);
+  const [adminError, setAdminError] = useState<string | null>(null);
 
   // Cuando cambia la categoría de la URL (o el reintento), volvemos a estado de
   // carga. Se hace durante el render (patrón recomendado por React) en lugar de
@@ -110,6 +124,67 @@ function Products() {
     setSearchParams(categoryId === "todas" ? {} : { category: categoryId });
   };
 
+  // ===== Acciones de administración (inline en el catálogo) =====
+
+  // Refresca la tarjeta de un producto guardado (editar o reponer).
+  const handleProductSaved = (updated: Product) => {
+    setProducts((prev) =>
+      prev.map((item) => (item.id === updated.id ? updated : item)),
+    );
+    setEditing(null);
+    setRestocking(null);
+    setAdminError(null);
+    setAdminNotice(`Producto "${updated.name}" actualizado correctamente.`);
+  };
+
+  // Abre el diálogo de eliminar con confirmación (no borra de una).
+  const handleDeleteRequest = (product: Product) => {
+    setAdminNotice(null);
+    setAdminError(null);
+    setDeleting(product);
+  };
+
+  // Confirma y ejecuta la eliminación desde el ConfirmDialog.
+  const handleConfirmDelete = async () => {
+    if (!deleting) return;
+
+    setDeletingBusy(true);
+    setAdminError(null);
+
+    try {
+      await adminDeleteProduct(deleting.id);
+      setProducts((prev) => prev.filter((item) => item.id !== deleting.id));
+      setAdminNotice(`Producto "${deleting.name}" eliminado del catálogo.`);
+      setDeleting(null);
+    } catch (err: unknown) {
+      setDeleting(null);
+      setAdminError(
+        err instanceof ApiError
+          ? err.message
+          : "No se pudo eliminar el producto. Intentá de nuevo.",
+      );
+    } finally {
+      setDeletingBusy(false);
+    }
+  };
+
+  // Se pasan a las tarjetas solo en modo admin (si no, no se renderizan).
+  const adminActions = isAdmin
+    ? {
+        onEdit: (product: Product) => {
+          setAdminNotice(null);
+          setAdminError(null);
+          setEditing(product);
+        },
+        onRestock: (product: Product) => {
+          setAdminNotice(null);
+          setAdminError(null);
+          setRestocking(product);
+        },
+        onDelete: handleDeleteRequest,
+      }
+    : undefined;
+
   return (
     <div className="products-layout">
       {/* ===== Panel lateral: filtros de categorías ===== */}
@@ -165,6 +240,25 @@ function Products() {
           </div>
         </div>
 
+        {/* Avisos de las acciones de administración (éxito o error) */}
+        {adminNotice && (
+          <div className="products__admin-notice" role="status">
+            <span>✅ {adminNotice}</span>
+            <button
+              type="button"
+              onClick={() => setAdminNotice(null)}
+              aria-label="Cerrar aviso"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+        {adminError && (
+          <p className="form-error" role="alert">
+            ⚠️ {adminError}
+          </p>
+        )}
+
         {/* Chip de búsqueda activa (entra desde la barra del header) */}
         {searchTerm && !loading && !error && (
           <div className="products__search-info">
@@ -214,7 +308,11 @@ function Products() {
             ) : (
               <div className="products__grid">
                 {visibleProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    adminActions={adminActions}
+                  />
                 ))}
               </div>
             )}
@@ -228,6 +326,36 @@ function Products() {
           </Link>
         )}
       </div>
+
+      {/* ===== Diálogos de administración (solo en modo admin) ===== */}
+      {editing && (
+        <ProductEditDialog
+          product={editing}
+          onSaved={handleProductSaved}
+          onClose={() => setEditing(null)}
+        />
+      )}
+
+      {restocking && (
+        <RestockDialog
+          product={restocking}
+          onSaved={handleProductSaved}
+          onClose={() => setRestocking(null)}
+        />
+      )}
+
+      {deleting && (
+        <ConfirmDialog
+          open
+          title="¿Eliminar producto?"
+          message={`Se eliminará "${deleting.name}" del catálogo. Los pedidos históricos no se modifican.`}
+          confirmLabel="Eliminar"
+          cancelLabel="Cancelar"
+          busy={deletingBusy}
+          onConfirm={handleConfirmDelete}
+          onCancel={() => setDeleting(null)}
+        />
+      )}
     </div>
   );
 }
