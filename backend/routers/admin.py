@@ -229,6 +229,17 @@ def upload_product_image(
     product.image = f"/uploads/products/{filename}"
     db.commit()
     db.refresh(product)
+
+    # Restaurar la lista original para la respuesta de la API (ProductOut
+    # espera list[str], no el JSON string de la BD).
+    if isinstance(product.description, str):
+        try:
+            parsed = json.loads(product.description)
+            if isinstance(parsed, list):
+                product.description = parsed
+        except (json.JSONDecodeError, TypeError):
+            product.description = [product.description] if product.description else []
+
     return product
 
 
