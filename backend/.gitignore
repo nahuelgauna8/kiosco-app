@@ -7,3 +7,9 @@ __pycache__/
 
 # Base de datos SQLite del kiosco (cada quien genera la suya)
 kiosco.db
+
+# Configuración sensible (contraseña y secreto del admin)
+.env
+
+# Imágenes subidas desde el panel de administración
+uploads/

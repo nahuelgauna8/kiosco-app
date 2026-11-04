@@ -8,7 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import Base, SessionLocal, engine
-from routers import orders, products
+from routers import admin, orders, products
 
 # Importamos los modelos para que registren sus tablas en Base.metadata.
 # (Sin este import, create_all no sabe qué tablas crear.)
@@ -43,6 +43,7 @@ app.add_middleware(
 
 
 # Incluimos los routers de cada recurso.
+app.include_router(admin.router)
 app.include_router(products.router)
 app.include_router(orders.router)
 

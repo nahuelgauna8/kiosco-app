@@ -9,6 +9,21 @@ from pydantic import BaseModel, ConfigDict, Field
 Category = Literal["bebidas", "snacks", "golosinas", "varios"]
 
 
+# ===== Administración =====
+
+class AdminLoginIn(BaseModel):
+    """Body del login de administrador: solo contraseña (sin usuario)."""
+
+    password: str = Field(min_length=1, description="La contraseña no puede estar vacía")
+
+
+class AdminSessionOut(BaseModel):
+    """Salida del login: token de sesión y cuándo expira."""
+
+    token: str
+    expires_at: int = Field(description="Expiración en segundos Unix (epoch)")
+
+
 # ===== Productos =====
 
 class ProductBase(BaseModel):
