@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ArrowRight, ShoppingCart, Trash2, X } from "lucide-react";
 import CartItem from "./CartItem";
 import { useCart } from "../context/CartContext";
 
@@ -53,15 +54,20 @@ function CartDrawer() {
         aria-hidden={!isCartOpen}
       >
         <div className="drawer__header">
-          <h2 className="drawer__title">Carrito de Compras</h2>
+          <h2 className="drawer__title">
+            <ShoppingCart size={20} strokeWidth={2.25} aria-hidden="true" />
+            Carrito de Compras
+          </h2>
           <button type="button" className="drawer__close" onClick={closeCart}>
-            Cerrar <span aria-hidden="true">✕</span>
+            <X size={18} aria-hidden="true" />
+            Cerrar
           </button>
         </div>
 
         <div className="drawer__body">
           {items.length === 0 ? (
             <div className="drawer__empty">
+              <ShoppingCart size={44} strokeWidth={1.5} aria-hidden="true" />
               <p>Tu carrito está vacío.</p>
               <button
                 type="button"
@@ -101,10 +107,12 @@ function CartDrawer() {
               className="button button--primary drawer__checkout"
               onClick={handleCheckout}
             >
-              Proceder al Pago →
+              Proceder al Pago
+              <ArrowRight size={17} aria-hidden="true" />
             </button>
 
             <button type="button" className="drawer__clear" onClick={clearCart}>
+              <Trash2 size={14} aria-hidden="true" />
               Vaciar carrito
             </button>
           </div>

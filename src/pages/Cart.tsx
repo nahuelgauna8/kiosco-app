@@ -1,5 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  CircleCheck,
+  ClipboardCheck,
+  LoaderCircle,
+  Trash2,
+  TriangleAlert,
+} from "lucide-react";
 import CartItem from "../components/CartItem";
 import { useCart } from "../context/CartContext";
 import { ApiError, createOrder } from "../services/api";
@@ -29,7 +36,7 @@ function Cart() {
 
       // Éxito: confirmación visible y carrito vaciado.
       setOrderMessage(
-        `¡Pedido #${order.id} confirmado! 🎉 Llevás ${order.items.length} producto(s) por $${order.total.toLocaleString("es-AR")}. ¡Gracias por tu compra!`,
+        `¡Pedido #${order.id} confirmado! Llevás ${order.items.length} producto(s) por $${order.total.toLocaleString("es-AR")}. ¡Gracias por tu compra!`,
       );
       clearCart();
     } catch (err: unknown) {
@@ -57,11 +64,15 @@ function Cart() {
         <h1>Tu carrito</h1>
         {orderError ? (
           <p className="status-message status-message--error" role="alert">
-            ⚠️ {orderError}
+            <TriangleAlert size={20} aria-hidden="true" />
+            {orderError}
           </p>
         ) : orderMessage ? (
           <div className="cart__order-done">
-            <p className="cart__message cart__message--success">{orderMessage}</p>
+            <p className="cart__message cart__message--success">
+              <CircleCheck size={18} aria-hidden="true" />
+              {orderMessage}
+            </p>
             <Link to="/orders" className="button button--secondary">
               Ver mis pedidos
             </Link>
@@ -82,6 +93,7 @@ function Cart() {
 
       {orderError && (
         <div className="status-message status-message--error" role="alert">
+          <TriangleAlert size={22} aria-hidden="true" />
           <p>{orderError}</p>
         </div>
       )}
@@ -109,6 +121,7 @@ function Cart() {
             onClick={handleClearCart}
             disabled={submitting}
           >
+            <Trash2 size={16} aria-hidden="true" />
             Vaciar carrito
           </button>
           <button
@@ -117,7 +130,21 @@ function Cart() {
             onClick={handleFinishOrder}
             disabled={submitting}
           >
-            {submitting ? "Enviando pedido..." : "Finalizar pedido"}
+            {submitting ? (
+              <>
+                <LoaderCircle
+                  className="status-message__spinner"
+                  size={16}
+                  aria-hidden="true"
+                />
+                Enviando pedido...
+              </>
+            ) : (
+              <>
+                <ClipboardCheck size={16} aria-hidden="true" />
+                Finalizar pedido
+              </>
+            )}
           </button>
         </div>
       </div>

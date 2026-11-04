@@ -1,3 +1,4 @@
+import { Minus, Plus, Trash2 } from "lucide-react";
 import type { CartItem as CartItemType } from "../types";
 import { useCart } from "../context/CartContext";
 import ProductImage from "./ProductImage";
@@ -34,7 +35,7 @@ function CartItem({ item }: CartItemProps) {
             onClick={() => updateQuantity(product.id, quantity - 1)}
             aria-label={`Restar un ${product.name}`}
           >
-            −
+            <Minus size={14} aria-hidden="true" />
           </button>
           <input
             type="number"
@@ -50,7 +51,7 @@ function CartItem({ item }: CartItemProps) {
             onClick={() => updateQuantity(product.id, quantity + 1)}
             aria-label={`Sumar un ${product.name}`}
           >
-            +
+            <Plus size={14} aria-hidden="true" />
           </button>
         </div>
       </div>
@@ -66,7 +67,8 @@ function CartItem({ item }: CartItemProps) {
           aria-label={`Eliminar ${product.name} del carrito`}
           title="Eliminar del carrito"
         >
-          🗑️ Quitar
+          <Trash2 size={14} aria-hidden="true" />
+          Quitar
         </button>
       </div>
     </li>

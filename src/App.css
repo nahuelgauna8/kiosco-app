@@ -850,6 +850,9 @@
 }
 
 .cart__message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 12px 16px;
   border-radius: var(--radius);
   font-weight: 600;
@@ -952,6 +955,9 @@
 }
 
 .cart-item__qty-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 28px;
   height: 28px;
   border: 1px solid var(--color-border);
@@ -983,6 +989,9 @@
 }
 
 .cart-item__remove {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   border: none;
   background: none;
   color: var(--color-text-light);
@@ -1048,6 +1057,9 @@
 
 .drawer__title {
   margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 1.35rem;
 }
 
@@ -1140,7 +1152,10 @@
 }
 
 .drawer__clear {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   margin: 10px auto 0;
   border: none;
   background: none;
