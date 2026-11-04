@@ -4,8 +4,11 @@
 #   uvicorn main:app --reload
 #
 # Documentación interactiva: http://127.0.0.1:8000/docs
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy import inspect as sqlalchemy_inspect
 
 from database import Base, SessionLocal, engine
@@ -65,6 +68,12 @@ app.add_middleware(
 app.include_router(admin.router)
 app.include_router(products.router)
 app.include_router(orders.router)
+
+# Sirve las imágenes subidas desde el panel: GET /uploads/products/<archivo>.
+# (La ruta en la base es relativa: "/uploads/products/x.png".)
+UPLOADS_DIR = Path(__file__).resolve().parent / "uploads"
+UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
 
 
 @app.get("/", tags=["health"])

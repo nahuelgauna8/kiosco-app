@@ -2,9 +2,11 @@
 #
 # Todas las rutas (salvo /login) exigen un token válido:
 #   Authorization: Bearer <token>
+import uuid
 from datetime import datetime, timezone
+from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -24,6 +26,13 @@ from schemas import (
 )
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
+
+# Extensiones de imagen permitidas (en minúsculas, con punto).
+ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
+# Tamaño máximo de la imagen: 5 MB.
+MAX_IMAGE_BYTES = 5 * 1024 * 1024
+# Carpeta de imágenes subidas: backend/uploads/products/
+UPLOADS_DIR = Path(__file__).resolve().parent.parent / "uploads" / "products"
 
 
 def _get_product_or_404(product_id: int, db: Session) -> Product:
@@ -134,6 +143,59 @@ def delete_product(product_id: int, db: Session = Depends(get_db)):
     db.delete(product)
     db.commit()
     return AdminDeleted(deleted=product_id)
+
+
+@router.post(
+    "/products/{product_id}/image",
+    response_model=ProductOut,
+    dependencies=[Depends(require_admin)],
+)
+def upload_product_image(
+    product_id: int,
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+):
+    """Sube una imagen del producto y guarda su ruta en la base.
+
+    - Formatos permitidos: jpg, jpeg, png, webp, gif (máximo 5 MB).
+    - El archivo se guarda en backend/uploads/products/ con nombre único
+      (uuid) para que dos subidas nunca se pisen.
+    - En la base queda "/uploads/products/<archivo>": FastAPI la sirve en
+      GET /uploads/... y el frontend le antepone la URL del API.
+    """
+    product = _get_product_or_404(product_id, db)
+
+    extension = Path(file.filename or "").suffix.lower()
+    if extension not in ALLOWED_IMAGE_EXTENSIONS:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=(
+                f"Formato no permitido ({extension or 'sin extensión'}). "
+                "Usá JPG, PNG, WEBP o GIF."
+            ),
+        )
+
+    # Leemos de más1 byte para detectar si supera el máximo sin cargar todo.
+    content = file.file.read(MAX_IMAGE_BYTES + 1)
+    if len(content) > MAX_IMAGE_BYTES:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="La imagen supera los 5 MB.",
+        )
+    if not content:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="El archivo está vacío.",
+        )
+
+    UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+    filename = f"{uuid.uuid4().hex}{extension}"
+    (UPLOADS_DIR / filename).write_bytes(content)
+
+    product.image = f"/uploads/products/{filename}"
+    db.commit()
+    db.refresh(product)
+    return product
 
 
 # ===== Dashboard =====
