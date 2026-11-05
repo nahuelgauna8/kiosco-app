@@ -112,11 +112,11 @@ class OrderOut(BaseModel):
             created_at=order.created_at,
             total=order.total,
             items=json.loads(order.items_json),
-            customer_name=order.customer_name,
-            delivery_method=order.delivery_method,
-            delivery_address=order.delivery_address,
-            delivery_name=order.delivery_name,
-            payment_method=order.payment_method,
+            customer_name=order.customer_name or "",
+            delivery_method=order.delivery_method or "pickup",
+            delivery_address=order.delivery_address or "",
+            delivery_name=order.delivery_name or "",
+            payment_method=order.payment_method or "cash",
         )
 
 

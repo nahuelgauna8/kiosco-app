@@ -93,8 +93,13 @@ def _create_order_impl(order: OrderCreate, db: Session):
 @router.get("", response_model=list[OrderOut])
 def get_orders(db: Session = Depends(get_db)):
     """Lista todos los pedidos, del más reciente al más antiguo."""
-    orders = db.scalars(select(Order).order_by(Order.id.desc())).all()
-    return [OrderOut.from_order(order) for order in orders]
+    try:
+        orders = db.scalars(select(Order).order_by(Order.id.desc())).all()
+        return [OrderOut.from_order(order) for order in orders]
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.delete("", response_model=OrdersDeleted)
