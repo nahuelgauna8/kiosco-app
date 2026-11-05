@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -10,35 +10,49 @@ import CartDrawer from "./CartDrawer";
 // CartDrawer vive acá para que el panel se pueda abrir desde cualquier ruta.
 function Layout() {
   const { pathname } = useLocation();
-  const [isDark, setIsDark] = useState<boolean>(false);
+  const prevPathnameRef = useRef<string | null>(null);
 
-  // Lee la preferencia guardada en localStorage (o el sistema) al montar.
+  // Evita que el navegador restaure el scroll por su cuenta y choque con
+  // nuestra restauración guardada en sessionStorage.
   useEffect(() => {
-    const saved = localStorage.getItem("kiosco:theme");
-    const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const dark = saved === "dark" || (!saved && systemDark);
-    if (dark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-    setIsDark(dark);
+    history.scrollRestoration = "manual";
+    return () => {
+      history.scrollRestoration = "auto";
+    };
   }, []);
 
-  const toggleDark = () => {
-    const next = !isDark;
-    localStorage.setItem("kiosco:theme", next ? "dark" : "light");
-    if (next) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
+  // Conserva la posición de scroll del catálogo al salir de /products y la
+  // restaura al volver, para que no tenga que bajar de nuevo hasta el producto
+  // que estaba viendo.
+  useEffect(() => {
+    const isProductsIndex = pathname === "/products";
+    const wasProductsIndex = prevPathnameRef.current === "/products";
+
+    // Salimos del catálogo (entramos a un detalle u otra ruta): guardamos el scroll actual.
+    if (wasProductsIndex && !isProductsIndex) {
+      sessionStorage.setItem("kiosco:scroll:/products", String(window.scrollY));
     }
-    setIsDark(next);
-  };
+
+    // Entramos al catálogo desde otra ruta: restauramos el scroll guardado.
+    if (isProductsIndex && !wasProductsIndex) {
+      const saved = sessionStorage.getItem("kiosco:scroll:/products");
+      if (saved !== null) {
+        const y = Number(saved);
+        // requestAnimationFrame espera a que React termine de renderizar
+        // la lista de productos antes de aplicar el scroll.
+        const raf = requestAnimationFrame(() => {
+          window.scrollTo(0, y);
+        });
+        return () => cancelAnimationFrame(raf);
+      }
+    }
+
+    prevPathnameRef.current = pathname;
+  }, [pathname]);
 
   return (
     <div className="layout">
-      <Header isDark={isDark} toggleDark={toggleDark} />
+      <Header />
       {pathname === "/" && <CategoryBar />}
       <main className="layout__main">
         <Outlet />

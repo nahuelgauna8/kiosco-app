@@ -24,21 +24,6 @@
   color: var(--color-text);
 }
 
-.dark {
-  --color-bg: #1a1612;
-  --color-surface: #25211d;
-  --color-text: #f3f0ea;
-  --color-text-light: #a9a196;
-  --color-primary: #fb923c;
-  --color-primary-dark: #fdba74;
-  --color-border: #44403c;
-  --color-danger: #f87171;
-  --color-success: #4ade80;
-  --shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-  --color-page: #0f0c0a;
-  --color-page-dot: #3d352f;
-}
-
 * {
   box-sizing: border-box;
 }
