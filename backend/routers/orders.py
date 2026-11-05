@@ -74,6 +74,11 @@ def create_order(order: OrderCreate, db: Session = Depends(get_db)):
             [item.model_dump() for item in order_items],
             ensure_ascii=False,
         ),
+        customer_name=order.customer_name,
+        delivery_method=order.delivery_method,
+        delivery_address=order.delivery_address,
+        delivery_name=order.delivery_name,
+        payment_method=order.payment_method,
     )
     db.add(db_order)
     # Si algo falla acá, la sesión revierte todo (stock incluido).

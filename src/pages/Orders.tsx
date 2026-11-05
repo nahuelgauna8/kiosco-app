@@ -1,6 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { LoaderCircle, Receipt, Trash2, TriangleAlert } from "lucide-react";
+import {
+  LoaderCircle,
+  Receipt,
+  Trash2,
+  TriangleAlert,
+  MapPin,
+  User,
+  CreditCard,
+  DollarSign,
+} from "lucide-react";
 import type { Order } from "../types";
 import { ApiError, deleteOrders, getOrders } from "../services/api";
 import ConfirmDialog from "../components/ConfirmDialog";
@@ -197,6 +206,53 @@ function Orders() {
                 <span>Total</span>
                 <strong>${order.total.toLocaleString("es-AR")}</strong>
               </div>
+
+              {order.delivery_method || order.payment_method || order.customer_name && (
+                <div className="order-card__details">
+                  {order.customer_name && (
+                    <span className="order-card__detail">
+                      <User size={14} aria-hidden="true" />
+                      {order.customer_name}
+                    </span>
+                  )}
+                  {order.delivery_method === "delivery" && (
+                    <>
+                      <span className="order-card__detail">
+                        <MapPin size={14} aria-hidden="true" />
+                        Envío a domicilio
+                      </span>
+                      {order.delivery_address && (
+                        <span className="order-card__detail">
+                          {order.delivery_address}
+                        </span>
+                      )}
+                      {order.delivery_name && (
+                        <span className="order-card__detail">
+                          Entrega a: {order.delivery_name}
+                        </span>
+                      )}
+                    </>
+                  )}
+                  {order.delivery_method === "pickup" && (
+                    <span className="order-card__detail">
+                      <MapPin size={14} aria-hidden="true" />
+                      Retiro en el kiosco
+                    </span>
+                  )}
+                  {order.payment_method === "cash" && (
+                    <span className="order-card__detail">
+                      <DollarSign size={14} aria-hidden="true" />
+                      Pago: Efectivo
+                    </span>
+                  )}
+                  {order.payment_method === "transfer" && (
+                    <span className="order-card__detail">
+                      <CreditCard size={14} aria-hidden="true" />
+                      Pago: Transferencia
+                    </span>
+                  )}
+                </div>
+              )}
             </li>
           ))}
         </ul>

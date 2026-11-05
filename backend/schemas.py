@@ -75,6 +75,11 @@ class OrderCreate(BaseModel):
     """Body para crear un pedido: {"items": [...]}"""
 
     items: list[OrderItem] = Field(min_length=1, description="El pedido debe tener al menos 1 ítem")
+    customer_name: str = Field(min_length=1, description="Nombre del cliente")
+    delivery_method: str = Field(description="pickup o delivery")
+    delivery_address: str | None = Field(default=None, description="Dirección de envío si es delivery")
+    delivery_name: str | None = Field(default=None, description="Nombre para el envío si es delivery")
+    payment_method: str = Field(description="cash o transfer")
 
 
 class OrderItemOut(BaseModel):
@@ -93,6 +98,11 @@ class OrderOut(BaseModel):
     created_at: datetime
     total: float
     items: list[OrderItemOut]
+    customer_name: str | None = None
+    delivery_method: str | None = None
+    delivery_address: str | None = None
+    delivery_name: str | None = None
+    payment_method: str | None = None
 
     @classmethod
     def from_order(cls, order) -> "OrderOut":

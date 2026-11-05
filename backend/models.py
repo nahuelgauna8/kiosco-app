@@ -34,3 +34,9 @@ class Order(Base):
     total: Mapped[float] = mapped_column(Float, nullable=False)
     # JSON con los productos del pedido (ej: [{"product_id": 1, "quantity": 2, ...}])
     items_json: Mapped[str] = mapped_column(Text, nullable=False)
+    # Datos del cliente y entrega
+    customer_name: Mapped[str | None] = mapped_column(String, nullable=True)
+    delivery_method: Mapped[str | None] = mapped_column(String, nullable=True)  # "pickup" o "delivery"
+    delivery_address: Mapped[str | None] = mapped_column(String, nullable=True)
+    delivery_name: Mapped[str | None] = mapped_column(String, nullable=True)
+    payment_method: Mapped[str | None] = mapped_column(String, nullable=True)  # "cash" o "transfer"

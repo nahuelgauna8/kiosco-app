@@ -128,10 +128,19 @@ export async function getProductById(id: number): Promise<Product> {
 // ===== Endpoints de pedidos =====
 
 // POST /api/orders (valida stock en el backend y lo descuenta)
-export async function createOrder(items: OrderItemInput[]): Promise<Order> {
+export async function createOrder(
+  items: OrderItemInput[],
+  data?: {
+    customer_name: string;
+    delivery_method: string;
+    delivery_address?: string;
+    delivery_name?: string;
+    payment_method: string;
+  },
+): Promise<Order> {
   return request<Order>(`/orders`, {
     method: "POST",
-    body: JSON.stringify({ items }),
+    body: JSON.stringify({ items, ...data }),
   });
 }
 
