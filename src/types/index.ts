@@ -40,11 +40,11 @@ export interface Order {
   created_at: string;
   total: number;
   items: OrderItemDetail[];
-  customer_name: string | null;
-  delivery_method: string | null;
-  delivery_address: string | null;
-  delivery_name: string | null;
-  payment_method: string | null;
+  customer_name: string;
+  delivery_method: string; // 'pickup' | 'delivery'
+  delivery_address?: string;
+  delivery_name?: string;
+  payment_method: string; // 'cash' | 'transfer'
 }
 
 // ===== Administración (API - panel admin) =====

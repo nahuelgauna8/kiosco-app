@@ -1,21 +1,9 @@
 # 🏪 Kiosco El Rápido – TP4 Programación 4
 
-# De qué trata el proyecto
-
-Kiosco El Rápido es una aplicación full-stack de comercio minorista diseñada para un kiosco de barrio. Su objetivo es digitalizar la operación diaria del local: permitir a los clientes navegar el catálogo de productos, agregar artículos al carrito y realizar pedidos; y permitir al administrador gestionar el inventario, registrar productos, reponer stock y consultar métricas de ventas.
-
-La aplicación se divide en dos partes claramente diferenciadas:
+Aplicación web full-stack para un kiosco de barrio.
 
 - **Parte 1 (completada):** Frontend SPA con React + TypeScript + React Router + Context API, integrado con API backend.
-- Una aplicación de página única (SPA) construida con Vite, React Router y TypeScript. Ofrece la interfaz de usuario tanto para clientes como para el administrador.
-  Se comunica con el backend mediante fetch a una API REST en http://localhost:8000/api. El estado global del carrito se maneja con React Context (CartContext) y persiste en localStorage.
-  
 - **Parte 2 (completada):** Backend con FastAPI + SQLite + Pydantic, integración frontend ↔ backend con loading y errores visibles, panel de administración completo.
-- Una API REST desarrollada con FastAPI, SQLAlchemy 2.x y SQLite. Expone endpoints para consultar el catálogo, crear pedidos (con validación y descuento automático de stock), administrar productos
-  (alta, edición, reabastecimiento, eliminación, carga de imágenes) y consultar estadísticas del dashboard. Las validaciones de entrada se implementan con esquemas Pydantic.
-
-  Propósito funcional: Unificar en una sola herramienta la vitrina de productos, el proceso de compra y la gestión administrativa del kiosco, reemplazando registros manuales por un sistema trazable y
-  accesible desde el navegador.
 
 ## 🧑‍💻 Equipo
 
@@ -37,6 +25,14 @@ npm run dev
 ```
 
 Abrí <http://localhost:5173> en el navegador.
+
+### Otros comandos útiles
+
+```bash
+npm run build    # Build de producción (compila TypeScript + Vite)
+npm run preview  # Vista previa del build de producción
+npm run lint     # Lint (oxlint)
+```
 
 ## 🚀 Cómo correr el backend (Parte 2)
 

@@ -77,8 +77,8 @@ class OrderCreate(BaseModel):
     items: list[OrderItem] = Field(min_length=1, description="El pedido debe tener al menos 1 ítem")
     customer_name: str = Field(min_length=1, description="Nombre del cliente")
     delivery_method: str = Field(description="pickup o delivery")
-    delivery_address: str | None = Field(default=None, description="Dirección de envío si es delivery")
-    delivery_name: str | None = Field(default=None, description="Nombre para el envío si es delivery")
+    delivery_address: str | None = None
+    delivery_name: str | None = None
     payment_method: str = Field(description="cash o transfer")
 
 
@@ -98,11 +98,11 @@ class OrderOut(BaseModel):
     created_at: datetime
     total: float
     items: list[OrderItemOut]
-    customer_name: str | None = None
-    delivery_method: str | None = None
+    customer_name: str
+    delivery_method: str
     delivery_address: str | None = None
     delivery_name: str | None = None
-    payment_method: str | None = None
+    payment_method: str
 
     @classmethod
     def from_order(cls, order) -> "OrderOut":
@@ -112,6 +112,11 @@ class OrderOut(BaseModel):
             created_at=order.created_at,
             total=order.total,
             items=json.loads(order.items_json),
+            customer_name=order.customer_name,
+            delivery_method=order.delivery_method,
+            delivery_address=order.delivery_address,
+            delivery_name=order.delivery_name,
+            payment_method=order.payment_method,
         )
 
 

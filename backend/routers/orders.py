@@ -3,6 +3,7 @@
 import json
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import JSONResponse
 from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
@@ -15,14 +16,15 @@ router = APIRouter(prefix="/api/orders", tags=["orders"])
 
 @router.post("", response_model=OrderOut, status_code=status.HTTP_201_CREATED)
 def create_order(order: OrderCreate, db: Session = Depends(get_db)):
-    """Crea un pedido: valida stock, lo descuenta y guarda el pedido.
+    """Crea un pedido: valida stock, lo descuenta y guarda el pedido."""
+    try:
+        return _create_order_impl(order, db)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return JSONResponse(status_code=500, content={"detail": str(e)})
 
-    Flujo (todo en la misma sesión: si algo falla, no se guarda nada):
-    1. Busca cada producto del pedido (404 si alguno no existe).
-    2. Verifica que haya stock suficiente para todas las cantidades (400 si no).
-    3. Descuenta el stock.
-    4. Calcula el total y guarda el pedido con sus ítems en JSON.
-    """
+def _create_order_impl(order: OrderCreate, db: Session):
     # Agrupamos cantidades por producto por si el mismo producto se repite en el body.
     requested: dict[int, int] = {}
     for item in order.items:

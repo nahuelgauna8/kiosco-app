@@ -29,14 +29,23 @@ Base.metadata.create_all(bind=engine)
 # base nació sin la columna image, hay que agregarla con ALTER TABLE.
 def migrate_missing_columns() -> None:
     inspector = sqlalchemy_inspect(engine)
-    if "products" not in inspector.get_table_names():
-        return
 
-    columns = {column["name"] for column in inspector.get_columns("products")}
-    if "image" not in columns:
-        with engine.begin() as connection:
-            connection.exec_driver_sql("ALTER TABLE products ADD COLUMN image VARCHAR")
-        print("Migración aplicada: products.image agregada.")
+    # products: columna image (legacy)
+    if "products" in inspector.get_table_names():
+        columns = {column["name"] for column in inspector.get_columns("products")}
+        if "image" not in columns:
+            with engine.begin() as connection:
+                connection.exec_driver_sql("ALTER TABLE products ADD COLUMN image VARCHAR")
+            print("Migración aplicada: products.image agregada.")
+
+    # orders: columnas de entrega y pago (checkout)
+    if "orders" in inspector.get_table_names():
+        columns = {column["name"] for column in inspector.get_columns("orders")}
+        for col in ["customer_name", "delivery_method", "delivery_address", "delivery_name", "payment_method"]:
+            if col not in columns:
+                with engine.begin() as connection:
+                    connection.exec_driver_sql(f"ALTER TABLE orders ADD COLUMN {col} VARCHAR")
+                print(f"Migración aplicada: orders.{col} agregada.")
 
 
 migrate_missing_columns()
