@@ -6,8 +6,12 @@ import {
   ClipboardCheck,
   LoaderCircle,
   ShoppingCart,
+  Store,
   Trash2,
   TriangleAlert,
+  Truck,
+  Banknote,
+  CreditCard,
 } from "lucide-react";
 import CartItem from "../components/CartItem";
 import { useCart } from "../context/CartContext";
@@ -174,29 +178,35 @@ function Cart() {
 
           <div className="checkout-field">
             <label>Método de entrega</label>
-            <div className="option-group">
-              <label className="option-card">
-                <input
-                  type="radio"
-                  name="delivery_method"
-                  value="pickup"
-                  checked={checkout.delivery_method === "pickup"}
-                  onChange={() => toggleDelivery("pickup")}
-                  aria-label="Retiro en el kiosco"
-                />
-                <span>Retiro en el kiosco</span>
-              </label>
-              <label className="option-card">
-                <input
-                  type="radio"
-                  name="delivery_method"
-                  value="delivery"
-                  checked={checkout.delivery_method === "delivery"}
-                  onChange={() => toggleDelivery("delivery")}
-                  aria-label="Envío a domicilio"
-                />
-                <span>Envío a domicilio</span>
-              </label>
+            <div className="option-grid">
+              <button
+                type="button"
+                className={`option-card option-card--delivery${
+                  checkout.delivery_method === "pickup" ? " is-selected" : ""
+                }`}
+                onClick={() => toggleDelivery("pickup")}
+                aria-pressed={checkout.delivery_method === "pickup"}
+              >
+                <span className="option-card__icon">
+                  <Store size={28} strokeWidth={1.75} aria-hidden="true" />
+                </span>
+                <span className="option-card__title">Retiro en kiosco</span>
+                <span className="option-card__subtitle">Pasás por el local</span>
+              </button>
+              <button
+                type="button"
+                className={`option-card option-card--delivery${
+                  checkout.delivery_method === "delivery" ? " is-selected" : ""
+                }`}
+                onClick={() => toggleDelivery("delivery")}
+                aria-pressed={checkout.delivery_method === "delivery"}
+              >
+                <span className="option-card__icon">
+                  <Truck size={28} strokeWidth={1.75} aria-hidden="true" />
+                </span>
+                <span className="option-card__title">Envío a domicilio</span>
+                <span className="option-card__subtitle">Te lo llevamos</span>
+              </button>
             </div>
           </div>
 
@@ -227,29 +237,35 @@ function Cart() {
 
           <div className="checkout-field">
             <label>Medio de pago</label>
-            <div className="option-group">
-              <label className="option-card">
-                <input
-                  type="radio"
-                  name="payment_method"
-                  value="cash"
-                  checked={checkout.payment_method === "cash"}
-                  onChange={() => togglePayment("cash")}
-                  aria-label="Efectivo"
-                />
-                <span>Efectivo</span>
-              </label>
-              <label className="option-card">
-                <input
-                  type="radio"
-                  name="payment_method"
-                  value="transfer"
-                  checked={checkout.payment_method === "transfer"}
-                  onChange={() => togglePayment("transfer")}
-                  aria-label="Transferencia"
-                />
-                <span>Transferencia</span>
-              </label>
+            <div className="option-grid">
+              <button
+                type="button"
+                className={`option-card option-card--payment${
+                  checkout.payment_method === "cash" ? " is-selected" : ""
+                }`}
+                onClick={() => togglePayment("cash")}
+                aria-pressed={checkout.payment_method === "cash"}
+              >
+                <span className="option-card__icon">
+                  <Banknote size={28} strokeWidth={1.75} aria-hidden="true" />
+                </span>
+                <span className="option-card__title">Efectivo</span>
+                <span className="option-card__subtitle">Pagás al recibir</span>
+              </button>
+              <button
+                type="button"
+                className={`option-card option-card--payment${
+                  checkout.payment_method === "transfer" ? " is-selected" : ""
+                }`}
+                onClick={() => togglePayment("transfer")}
+                aria-pressed={checkout.payment_method === "transfer"}
+              >
+                <span className="option-card__icon">
+                  <CreditCard size={28} strokeWidth={1.75} aria-hidden="true" />
+                </span>
+                <span className="option-card__title">Transferencia</span>
+                <span className="option-card__subtitle">Pagás por transferencia</span>
+              </button>
             </div>
           </div>
 

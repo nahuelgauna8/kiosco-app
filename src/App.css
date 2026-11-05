@@ -1207,39 +1207,91 @@
   box-shadow: 0 0 0 3px rgba(232, 89, 12, 0.15);
 }
 
-.option-group {
-  display: flex;
-  gap: 12px;
+.option-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
   margin-bottom: 20px;
 }
 
+@media (max-width: 600px) {
+  .option-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .option-card {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  padding: 22px 18px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 18px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  color: var(--color-text);
+  font-family: inherit;
+  min-height: 140px;
+  outline: none;
+}
+
+.option-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 12px 24px rgba(232, 89, 12, 0.12);
+  transform: translateY(-4px) scale(1.02);
+}
+
+.option-card.is-selected {
+  border-color: var(--color-primary);
+  background: rgba(232, 89, 12, 0.08);
+  box-shadow: 0 10px 26px rgba(232, 89, 12, 0.15);
+  transform: translateY(-2px) scale(1.01);
+}
+
+.option-card:focus-visible {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(232, 89, 12, 0.18);
+}
+
+.option-card__icon {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 14px 18px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  background: #fff;
-  cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--color-text);
-}
-
-.option-card input[type="radio"] {
-  margin: 0;
-  width: 18px;
-  height: 18px;
-}
-
-.option-card.selected {
-  border-color: var(--color-primary);
-  background: rgba(232, 89, 12, 0.08);
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: var(--color-bg);
   color: var(--color-primary);
+  transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.option-card.is-selected .option-card__icon {
+  background: var(--color-primary);
+  color: #fff;
+  transform: scale(1.08);
+}
+
+.option-card__title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.option-card__subtitle {
+  font-size: 0.82rem;
+  color: var(--color-text-light);
+  line-height: 1.25;
+  max-width: 22ch;
+}
+
+.option-card.is-selected .option-card__title {
+  color: var(--color-primary-dark);
 }
 
 .checkout-actions {
