@@ -31,15 +31,37 @@ function isStoredCartItem(value: unknown): value is CartItem {
   const product = candidate.product as Record<string, unknown> | null | undefined;
   if (typeof product !== "object" || product === null) return false;
 
+  const description = product.description;
+  const descriptionOk =
+    typeof description === "string" ||
+    (Array.isArray(description) &&
+      description.every((item) => typeof item === "string"));
+
   return (
     typeof product.id === "number" &&
     typeof product.name === "string" &&
     typeof product.category === "string" &&
     typeof product.price === "number" &&
     typeof product.stock === "number" &&
-    typeof product.description === "string" &&
+    descriptionOk &&
     (product.image === undefined || typeof product.image === "string")
   );
+}
+
+// Migra items del carrito guardados con una versión anterior (description como string)
+// al formato actual (description como array de strings).
+function migrateStoredCartItem(item: CartItem): CartItem {
+  const description = item.product.description;
+  if (typeof description === "string") {
+    return {
+      ...item,
+      product: {
+        ...item.product,
+        description: [description],
+      },
+    };
+  }
+  return item;
 }
 
 // Lee el carrito guardado. Si hay datos corruptos o no hay nada, devuelve [].
@@ -51,7 +73,7 @@ function loadStoredCart(): CartItem[] {
     const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
 
-    return parsed.filter(isStoredCartItem);
+    return parsed.filter(isStoredCartItem).map(migrateStoredCartItem);
   } catch {
     // JSON inválido o localStorage inaccesible: empezamos con el carrito vacío.
     return [];
