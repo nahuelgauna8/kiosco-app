@@ -96,6 +96,7 @@ Ambas partes del TP4 están implementadas y verificadas:
 - Detalle de producto con imagen, precio, stock, características en viñetas y selector de cantidad.
 - Carrito persistente en `localStorage`, resumen, totales y vaciado.
 - Página "Mis pedidos" con historial y borrado con confirmación.
+- **Checkout previo:** nombre del cliente, método de entrega (retiro/envío a domicilio con dirección), medio de pago (efectivo/transferencia), guardado en el pedido y visible en "Mis pedidos" y panel admin.
 
 ### ✅ Parte 2 – Backend (FastAPI + SQLite)
 - Modelos `Product` y `Order` con SQLAlchemy.
@@ -104,6 +105,7 @@ Ambas partes del TP4 están implementadas y verificadas:
 - Verificación y descuento de stock al crear pedidos.
 - CORS habilitado para `localhost:5173`.
 - Panel de administración: login (contraseña `kiosco2026`), token HMAC con expiración 8h, CRUD de productos, reabastecimiento, subida de imágenes, dashboard de estadísticas.
+- **Pedidos con datos de cliente y entrega:** `Order` guarda `customer_name`, `delivery_method`, `delivery_address`, `delivery_name`, `payment_method`. Migración automática de columnas en `backend/kiosco.db`.
 
 ## 📌 Plan de trabajo (completado)
 
@@ -139,6 +141,23 @@ Ambas partes del TP4 están implementadas y verificadas:
 - [x] **A.4** – Frontend: sesión de admin (Context + token en localStorage), ruta `/admin` con login, link "⚙️ Ajustes" en el footer y badge "🔧 Modo admin" en el header
 - [x] **A.5** – Frontend: panel `/admin` con dashboard (pedidos del día, ingresos, productos por agotarse) y alta de productos con imagen (URL o archivo)
 - [x] **A.6** – Frontend: edición inline en el catálogo (editar / reponer / eliminar) con alerta de stock bajo
+
+### 🛒 Checkout con datos de cliente y entrega (fase 5)
+
+- [x] **AB.1** – Checkout previo: botón "Proceder al pedido" abre formulario con nombre, método de entrega (retiro/envío a domicilio con dirección) y medio de pago (efectivo/transferencia)
+- [x] **AB.2** – Rediseño del checkout: tarjetas grandes, centradas y con movimiento; estados seleccionados con borde/fondo naranja e iconos lucide (Store, Truck, Banknote, CreditCard)
+- [x] **Z.2** – Backend: `Order` con `customer_name`, `delivery_method`, `delivery_address`, `delivery_name`, `payment_method`; endpoints y serialización actualizados
+- [x] **AA.1** – Fix: pedidos con campos nulos no rompían `GET /api/orders` (valor por defecto en `OrderOut.from_order()` + try/except en el endpoint)
+- [x] **AA.2** – No versionar `kiosco.db` ni `.venv`; `.gitignore` actualizado
+- [x] **R.1** – Fix error 500 al reponer stock (restauración de `description` a lista antes de retornar)
+- [x] **T.1** – Fix error 500 al subir imagen de producto (mismo fix)
+- [x] **S.1** – Imágenes de productos se ven completas en el catálogo (`object-fit: contain`)
+- [x] **O.1** – Detalle de producto: se eliminaron las miniaturas, se conserva solo la imagen principal grande
+- [x] **P.1** – Badge de categoría con ancho ajustado al texto
+- [x] **Q.1** – Título, precio y stock alineados con los checks de características
+- [x] **M.1** – Quita timeout de 8s en peticiones a la API (evita error falso al guardar)
+- [x] **I.1** – Icono de ajustes (engranaje) en el Navbar, visible solo sin sesión de admin, redirige a `/admin`
+- [x] **G.1** – Botón "Modo admin" enlaza al panel de administración
 
 **Acceso al panel:** link "⚙️ Ajustes" en el footer o URL directa `/admin`.  
 Clave por defecto: `kiosco2026` (se cambia en `backend/.env`, archivo ignorado por git).
