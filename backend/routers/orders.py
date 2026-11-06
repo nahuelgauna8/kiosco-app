@@ -77,6 +77,7 @@ def _create_order_impl(order: OrderCreate, db: Session):
             ensure_ascii=False,
         ),
         customer_name=order.customer_name,
+        customer_phone=order.customer_phone,
         delivery_method=order.delivery_method,
         delivery_address=order.delivery_address,
         delivery_name=order.delivery_name,

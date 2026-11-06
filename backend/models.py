@@ -35,6 +35,7 @@ class Order(Base):
     total: Mapped[float] = mapped_column(Float, nullable=False)
     # Datos del cliente y entrega
     customer_name: Mapped[str] = mapped_column(String, nullable=False, default="")
+    customer_phone: Mapped[str] = mapped_column(String, nullable=False, default="")
     delivery_method: Mapped[str] = mapped_column(String, nullable=False, default="pickup") # pickup | delivery
     delivery_address: Mapped[str | None] = mapped_column(String, nullable=True, default=None)
     delivery_name: Mapped[str | None] = mapped_column(String, nullable=True, default=None)

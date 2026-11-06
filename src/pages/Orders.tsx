@@ -198,6 +198,13 @@ function Orders() {
                 <strong>${order.total.toLocaleString("es-AR")}</strong>
               </div>
 
+              {order.customer_name && (
+                <div className="order-card__customer">
+                  <span className="order-card__customer-name">{order.customer_name}</span>
+                  <span className="order-card__customer-phone">{order.customer_phone}</span>
+                </div>
+              )}
+
               <div className="order-card__meta">
                 <span className={`order-card__badge delivery ${order.delivery_method === "delivery" ? "is-delivery" : ""}`}>
                   {order.delivery_method === "delivery" ? "Para envío" : "Para retiro"}

@@ -41,7 +41,7 @@ def migrate_missing_columns() -> None:
     # orders: columnas de entrega y pago (checkout)
     if "orders" in inspector.get_table_names():
         columns = {column["name"] for column in inspector.get_columns("orders")}
-        for col in ["customer_name", "delivery_method", "delivery_address", "delivery_name", "payment_method"]:
+        for col in ["customer_name", "customer_phone", "delivery_method", "delivery_address", "delivery_name", "payment_method"]:
             if col not in columns:
                 with engine.begin() as connection:
                     connection.exec_driver_sql(f"ALTER TABLE orders ADD COLUMN {col} VARCHAR")

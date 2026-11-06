@@ -30,6 +30,7 @@ function Cart() {
   // Estado del flujo de checkout previo.
   const [checkout, setCheckout] = useState<{
     customer_name: string;
+    customer_phone: string;
     delivery_method: "pickup" | "delivery";
     delivery_address: string;
     delivery_name: string;
@@ -50,6 +51,7 @@ function Cart() {
         })),
         {
           customer_name: checkout!.customer_name,
+          customer_phone: checkout!.customer_phone,
           delivery_method: checkout!.delivery_method,
           delivery_address: checkout!.delivery_address,
           delivery_name: checkout!.delivery_name,
@@ -88,6 +90,7 @@ function Cart() {
   const startCheckout = () => {
     setCheckout({
       customer_name: "",
+      customer_phone: "",
       delivery_method: "pickup",
       delivery_address: "",
       delivery_name: "",
@@ -115,6 +118,7 @@ function Cart() {
   const isCheckoutValid = () => {
     if (!checkout) return false;
     if (!checkout.customer_name.trim()) return false;
+    if (!checkout.customer_phone.trim()) return false;
     if (checkout.delivery_method === "delivery") {
       if (!checkout.delivery_address.trim()) return false;
       if (!checkout.delivery_name.trim()) return false;
@@ -173,6 +177,17 @@ function Cart() {
               placeholder="Ej: Juan Pérez"
               value={checkout.customer_name}
               onChange={(e) => updateCheckout("customer_name", e.target.value)}
+            />
+          </div>
+
+          <div className="checkout-field">
+            <label htmlFor="checkout-customer-phone">Celular</label>
+            <input
+              id="checkout-customer-phone"
+              type="tel"
+              placeholder="Ej: 11 6000 0000"
+              value={checkout!.customer_phone}
+              onChange={(e) => updateCheckout("customer_phone", e.target.value)}
             />
           </div>
 

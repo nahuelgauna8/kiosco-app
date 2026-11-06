@@ -76,6 +76,7 @@ class OrderCreate(BaseModel):
 
     items: list[OrderItem] = Field(min_length=1, description="El pedido debe tener al menos 1 ítem")
     customer_name: str = Field(min_length=1, description="Nombre del cliente")
+    customer_phone: str = Field(min_length=1, description="Número de celular del cliente")
     delivery_method: str = Field(description="pickup o delivery")
     delivery_address: str | None = None
     delivery_name: str | None = None
@@ -99,6 +100,7 @@ class OrderOut(BaseModel):
     total: float
     items: list[OrderItemOut]
     customer_name: str
+    customer_phone: str
     delivery_method: str
     delivery_address: str | None = None
     delivery_name: str | None = None
@@ -113,6 +115,7 @@ class OrderOut(BaseModel):
             total=order.total,
             items=json.loads(order.items_json),
             customer_name=order.customer_name or "",
+            customer_phone=order.customer_phone or "",
             delivery_method=order.delivery_method or "pickup",
             delivery_address=order.delivery_address or "",
             delivery_name=order.delivery_name or "",

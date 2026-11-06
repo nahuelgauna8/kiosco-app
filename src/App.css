@@ -1305,6 +1305,23 @@
 }
 
 /* Badges de método de entrega y pago en tarjetas de pedido */
+.order-card__customer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.order-card__customer-name {
+  font-weight: 700;
+}
+
+.order-card__customer-phone {
+  color: var(--color-text-light);
+}
+
 .order-card__meta {
   display: flex;
   gap: 10px;

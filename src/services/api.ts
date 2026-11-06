@@ -132,6 +132,7 @@ export async function createOrder(
   items: OrderItemInput[],
   data?: {
     customer_name: string;
+    customer_phone: string;
     delivery_method: string;
     delivery_address?: string;
     delivery_name?: string;

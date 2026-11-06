@@ -41,6 +41,7 @@ export interface Order {
   total: number;
   items: OrderItemDetail[];
   customer_name: string;
+  customer_phone: string;
   delivery_method: string; // 'pickup' | 'delivery'
   delivery_address?: string;
   delivery_name?: string;
