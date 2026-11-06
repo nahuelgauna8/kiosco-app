@@ -200,8 +200,17 @@ function Orders() {
 
               {order.customer_name && (
                 <div className="order-card__customer">
-                  <span className="order-card__customer-name">{order.customer_name}</span>
-                  <span className="order-card__customer-phone">{order.customer_phone}</span>
+                  <div className="order-card__customer-info">
+                    <span className="order-card__customer-name">{order.customer_name}</span>
+                    <span className="order-card__customer-phone">{order.customer_phone}</span>
+                  </div>
+
+                  {order.delivery_method === "delivery" && (
+                    <div className="order-card__customer-delivery">
+                      <span className="order-card__delivery-name">{order.delivery_name}</span>
+                      <span className="order-card__delivery-address">{order.delivery_address}</span>
+                    </div>
+                  )}
                 </div>
               )}
 
